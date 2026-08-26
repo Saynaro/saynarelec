@@ -1,0 +1,15 @@
+{
+  "name": "SiteContent",
+  "type": "object",
+  "properties": {
+    "content": {
+      "type": "object"
+    }
+  },
+  "rls": {
+    "read": {},
+    "create": {},
+    "update": {},
+    "delete": {}
+  }
+}

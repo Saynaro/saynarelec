@@ -1,0 +1,73 @@
+import React, { useState } from 'react';
+import { useContent } from '@/lib/content';
+import Modal from './Modal';
+import { Mail, Lock, Loader2 } from 'lucide-react';
+
+export default function AdminLogin({ open, onClose }) {
+  const { login } = useContent();
+  const [email, setEmail] = useState('');
+  const [password, setPassword] = useState('');
+  const [error, setError] = useState('');
+
+  const submit = (e) => {
+    e.preventDefault();
+    setError('');
+    const result = login(email, password);
+    if (result.success) {
+      setEmail('');
+      setPassword('');
+      onClose();
+    } else if (result.field === 'email') {
+      setError('Adresse e-mail incorrecte.');
+    } else {
+      setError('Mot de passe incorrect.');
+    }
+  };
+
+  return (
+    <Modal open={open} onClose={onClose} title="Espace administrateur">
+      <p className="text-sm text-navy/60 mb-5">
+        Connectez-vous pour modifier le contenu du site.
+      </p>
+      {error && (
+        <div className="mb-4 p-3 bg-red-50 text-red-700 text-sm border-l-2 border-red-500">{error}</div>
+      )}
+      <form onSubmit={submit} className="space-y-4">
+        <div>
+          <label className="block text-[10px] uppercase tracking-label text-navy/55 mb-1">Email</label>
+          <div className="relative">
+            <Mail size={16} className="absolute left-3 top-1/2 -translate-y-1/2 text-navy/40" />
+            <input
+              type="email"
+              value={email}
+              onChange={(e) => setEmail(e.target.value)}
+              required
+              className="w-full border-b border-navy/25 py-2 pl-9 text-navy focus:border-electric focus:outline-none"
+              placeholder="saynarelec@gmail.com"
+            />
+          </div>
+        </div>
+        <div>
+          <label className="block text-[10px] uppercase tracking-label text-navy/55 mb-1">Mot de passe</label>
+          <div className="relative">
+            <Lock size={16} className="absolute left-3 top-1/2 -translate-y-1/2 text-navy/40" />
+            <input
+              type="password"
+              value={password}
+              onChange={(e) => setPassword(e.target.value)}
+              required
+              className="w-full border-b border-navy/25 py-2 pl-9 text-navy focus:border-electric focus:outline-none"
+              placeholder="••••••••"
+            />
+          </div>
+        </div>
+        <button
+          type="submit"
+          className="w-full bg-electric text-white py-3 text-[12px] font-bold uppercase tracking-label hover:bg-navy transition-colors"
+        >
+          Se connecter
+        </button>
+      </form>
+    </Modal>
+  );
+}
