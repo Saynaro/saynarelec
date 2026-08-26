@@ -4,7 +4,14 @@ import { uploadToCloudinary, isCloudinaryConfigured } from '@/lib/cloudinary';
 import { useContent } from '@/lib/content';
 import ConfirmModal from './ConfirmModal';
 
-export default function EditableImage({ src, onChange, onClear, alt, className, fittingType = 'fill' }) {
+export default function EditableImage({
+  src,
+  onChange,
+  onClear = null,
+  alt = '',
+  className = '',
+  fittingType = 'fill',
+}) {
   const { isAdmin } = useContent();
   const inputRef = useRef(null);
   const [uploading, setUploading] = useState(false);
