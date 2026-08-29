@@ -62,7 +62,7 @@ export default function ServiceModal({ open, onClose, initial, onSave }) {
         </div>
         <div>
           <label className="block text-[10px] uppercase tracking-label text-navy/55 mb-1">
-            Nom <span className="text-red-500">*</span>
+            Nom et Prénom <span className="text-red-500">*</span>
           </label>
           <input
             value={name}

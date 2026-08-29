@@ -1,36 +1,78 @@
-import { useLocation } from 'react-router-dom';
+import React from 'react';
+import { Link } from 'react-router-dom';
+import SEO from '@/components/SEO';
+import { ArrowLeft, Home, Zap, Shield, Sun } from 'lucide-react';
 
 export default function PageNotFound() {
-    const location = useLocation();
-    const pageName = location.pathname.substring(1);
+  return (
+    <div className="min-h-screen bg-navy text-white flex flex-col justify-between">
+      <SEO
+        title="Page Non Trouvée (404) | Saynarelec"
+        description="La page demandée n'existe pas ou a été déplacée. Retrouvez tous nos services d'électricité en Belgique."
+        noindex={true}
+      />
 
-    return (
-        <div className="min-h-screen flex items-center justify-center p-6 bg-slate-50">
-            <div className="max-w-md w-full">
-                <div className="text-center space-y-6">
-                    <div className="space-y-2">
-                        <h1 className="text-7xl font-light text-slate-300">404</h1>
-                        <div className="h-0.5 w-16 bg-slate-200 mx-auto"></div>
-                    </div>
-                    <div className="space-y-3">
-                        <h2 className="text-2xl font-medium text-slate-800">Page Not Found</h2>
-                        <p className="text-slate-600 leading-relaxed">
-                            The page <span className="font-medium text-slate-700">"{pageName}"</span> could not be found.
-                        </p>
-                    </div>
-                    <div className="pt-6">
-                        <button
-                            onClick={() => window.location.href = '/'}
-                            className="inline-flex items-center px-4 py-2 text-sm font-medium text-slate-700 bg-white border border-slate-200 rounded-lg hover:bg-slate-50 hover:border-slate-300 transition-colors duration-200 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-slate-500"
-                        >
-                            <svg className="w-4 h-4 mr-2" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                                <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M3 12l2-2m0 0l7-7 7 7M5 10v10a1 1 0 001 1h3m10-11l2 2m-2-2v10a1 1 0 01-1 1h-3m-6 0a1 1 0 001-1v-4a1 1 0 011-1h2a1 1 0 011 1v4a1 1 0 001 1m-6 0h6" />
-                            </svg>
-                            Go Home
-                        </button>
-                    </div>
-                </div>
-            </div>
+      <header className="border-b border-white/10 p-6">
+        <div className="max-w-4xl mx-auto flex items-center justify-between">
+          <Link to="/" className="font-heading font-bold text-2xl tracking-tightest text-white">
+            SAYNARELEC
+          </Link>
+          <Link to="/" className="inline-flex items-center gap-2 text-xs text-white/70 hover:text-solar uppercase tracking-label font-bold">
+            <ArrowLeft size={14} /> Retour à l'accueil
+          </Link>
         </div>
-    )
+      </header>
+
+      <main className="max-w-3xl mx-auto px-6 py-16 text-center">
+        <span className="font-heading font-extrabold text-7xl sm:text-9xl text-solar/20 tracking-widest block select-none">
+          404
+        </span>
+        <h1 className="font-heading font-bold text-3xl sm:text-4xl text-white mt-4 mb-4">
+          Page introuvable
+        </h1>
+        <p className="text-white/70 text-base sm:text-lg max-w-md mx-auto mb-8">
+          La page que vous recherchez semble avoir été déplacée ou n'existe plus.
+        </p>
+
+        <div className="flex flex-wrap justify-center gap-4 mb-12">
+          <Link
+            to="/"
+            className="inline-flex items-center gap-2 bg-solar text-navy font-semibold px-6 py-3 rounded-xl hover:bg-solar/90 transition-all shadow-lg shadow-solar/20 text-sm"
+          >
+            <Home size={16} /> Page d'accueil
+          </Link>
+          <Link
+            to="/contact"
+            className="inline-flex items-center gap-2 bg-white/10 hover:bg-white/20 text-white font-semibold px-6 py-3 rounded-xl transition-all border border-white/15 text-sm"
+          >
+            Demander un devis
+          </Link>
+        </div>
+
+        <div className="border-t border-white/10 pt-10 text-left">
+          <p className="text-xs uppercase tracking-label text-solar font-bold mb-4 text-center">
+            NOS PRINCIPALES PRESTATIONS EN BELGIQUE
+          </p>
+          <div className="grid grid-cols-1 sm:grid-cols-2 gap-3 max-w-lg mx-auto text-sm">
+            <Link to="/services/electricite-generale" className="p-3 rounded-xl bg-white/5 hover:bg-white/10 text-white/80 hover:text-solar transition-colors flex items-center gap-2">
+              <Zap size={14} className="text-solar" /> Électricité générale
+            </Link>
+            <Link to="/services/renovation-electrique" className="p-3 rounded-xl bg-white/5 hover:bg-white/10 text-white/80 hover:text-solar transition-colors flex items-center gap-2">
+              <Zap size={14} className="text-solar" /> Rénovation électrique
+            </Link>
+            <Link to="/services/mise-en-conformite" className="p-3 rounded-xl bg-white/5 hover:bg-white/10 text-white/80 hover:text-solar transition-colors flex items-center gap-2">
+              <Shield size={14} className="text-solar" /> Mise en conformité RGIE
+            </Link>
+            <Link to="/services/panneaux-solaires" className="p-3 rounded-xl bg-white/5 hover:bg-white/10 text-white/80 hover:text-solar transition-colors flex items-center gap-2">
+              <Sun size={14} className="text-solar" /> Panneaux solaires
+            </Link>
+          </div>
+        </div>
+      </main>
+
+      <footer className="border-t border-white/10 py-6 text-center text-xs text-white/40">
+        © {new Date().getFullYear()} Saynarelec — Électricité & Solaire · Belgique
+      </footer>
+    </div>
+  );
 }

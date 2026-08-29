@@ -49,7 +49,7 @@ export default function SolarSection() {
           <div className="relative aspect-[16/11] w-full overflow-hidden">
             <EditableImage
               src={img('solar_image') || SOLAR_IMG}
-              alt="Panneaux solaires Saynarelec"
+              alt="Installation de panneaux solaires photovoltaïques en Belgique — Saynarelec"
               onChange={(url) => setImage('solar_image', url)}
               className="w-full h-full"
             />

@@ -43,7 +43,7 @@ export default function AdminLogin({ open, onClose }) {
               onChange={(e) => setEmail(e.target.value)}
               required
               className="w-full border-b border-navy/25 py-2 pl-9 text-navy focus:border-electric focus:outline-none"
-              placeholder="saynarelec@gmail.com"
+              placeholder="contact@saynarelec.com"
             />
           </div>
         </div>

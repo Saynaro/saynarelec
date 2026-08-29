@@ -1,7 +1,5 @@
 import React, { createContext, useContext, useState, useEffect } from 'react';
 
-const LanguageContext = createContext({ lang: 'fr', setLang: () => {}, t: (k) => k });
-
 export const dictionaries = {
   fr: {
     // Header
@@ -85,8 +83,8 @@ export const dictionaries = {
     contact_label: 'CONTACT',
     contact_title: 'Parlons de votre projet.',
     contact_email_label: 'ÉCRIVEZ-NOUS',
-    contact_email: 'saynarelec@gmail.com',
-    contact_form_name: 'Nom',
+    contact_email: 'contact@saynarelec.com',
+    contact_form_name: 'Nom et prénom',
     contact_form_email: 'E-mail',
     contact_form_phone: 'Téléphone',
     contact_form_type: 'Type de projet',
@@ -186,8 +184,8 @@ export const dictionaries = {
     contact_label: 'CONTACT',
     contact_title: 'Laten we over uw project praten.',
     contact_email_label: 'SCHRIJF ONS',
-    contact_email: 'saynarelec@gmail.com',
-    contact_form_name: 'Naam',
+    contact_email: 'contact@saynarelec.com',
+    contact_form_name: 'Naam en voornaam',
     contact_form_email: 'E-mail',
     contact_form_phone: 'Telefoon',
     contact_form_type: 'Projecttype',
@@ -285,8 +283,8 @@ export const dictionaries = {
     contact_label: 'CONTACT',
     contact_title: 'Let\'s talk about your project.',
     contact_email_label: 'WRITE TO US',
-    contact_email: 'saynarelec@gmail.com',
-    contact_form_name: 'Name',
+    contact_email: 'contact@saynarelec.com',
+    contact_form_name: 'Full name',
     contact_form_email: 'Email',
     contact_form_phone: 'Phone',
     contact_form_type: 'Project type',
@@ -312,6 +310,13 @@ export const dictionaries = {
     legal_privacy_body: 'Saynarelec respects the confidentiality of personal data submitted via the contact form. This data is used solely to respond to your quote request and is never shared with third parties. In accordance with the GDPR, you may request access, rectification or deletion of your data at any time via the contact email address.',
   },
 };
+
+const LanguageContext = createContext({
+  lang: 'fr',
+  setLang: (_lang) => {},
+  t: (k) => k,
+  dict: dictionaries.fr,
+});
 
 export function LanguageProvider({ children }) {
   const [lang, setLang] = useState('fr');

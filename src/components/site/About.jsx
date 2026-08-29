@@ -15,7 +15,7 @@ export default function About() {
           <div className="relative aspect-[4/5] w-full overflow-hidden">
             <EditableImage
               src={img('about_image') || ABOUT_IMG}
-              alt="Ibragim Sainaro — Saynarelec"
+              alt="Ibragim Sainaro — Fondateur et électricien Saynarelec en Belgique"
               onChange={(url) => setImage('about_image', url)}
               className="w-full h-full"
             />

@@ -6,6 +6,7 @@ import CountUpStat from '@/components/ui/CountUpStat';
 import Reveal from './Reveal';
 import ConfirmModal from './cms/ConfirmModal';
 import { Plus, Trash2 } from 'lucide-react';
+import { useToast } from '@/components/ui/use-toast';
 
 const EMAILJS_SERVICE_ID = import.meta.env.VITE_EMAILJS_SERVICE_ID;
 const EMAILJS_TEMPLATE_ID = import.meta.env.VITE_EMAILJS_TEMPLATE_ID;
@@ -15,6 +16,7 @@ const isEmailJSConfigured = !!(EMAILJS_SERVICE_ID && EMAILJS_TEMPLATE_ID && EMAI
 
 export default function Contact() {
   const { t, isAdmin, contactTypes, addContactType, deleteContactType } = useContent();
+  const { toast } = useToast();
   const [sent, setSent] = useState(false);
   const [error, setError] = useState('');
   const [loading, setLoading] = useState(false);
@@ -28,10 +30,15 @@ export default function Contact() {
     setLoading(true);
 
     if (!isEmailJSConfigured) {
-      // Если EmailJS не настроен — просто симулируем успех (для разработки)
+      // Si EmailJS n'est pas encore configuré — simulation en mode développement
       console.warn('EmailJS non configuré. Remplissez les variables VITE_EMAILJS_* dans .env');
       setSent(true);
       setForm({ name: '', email: '', phone: '', type: '', message: '' });
+      toast({
+        title: "Demande envoyée avec succès",
+        description: "Merci pour votre message ! Nous vous recontacterons sous 24h à 48h.",
+        duration: 5000,
+      });
       setTimeout(() => setSent(false), 6000);
       setLoading(false);
       return;
@@ -52,10 +59,22 @@ export default function Contact() {
       );
       setSent(true);
       setForm({ name: '', email: '', phone: '', type: '', message: '' });
+      toast({
+        title: "Demande envoyée avec succès",
+        description: "Merci pour votre message ! Nous vous recontacterons sous 24h à 48h.",
+        duration: 5000,
+      });
       setTimeout(() => setSent(false), 6000);
     } catch (err) {
       console.error('EmailJS error:', err);
-      setError(t('contact_form_error') || 'Erreur lors de l\'envoi. Réessayez.');
+      const errMsg = t('contact_form_error') || "Erreur lors de l'envoi. Veuillez réessayer ou nous contacter par e-mail.";
+      setError(errMsg);
+      toast({
+        title: "Erreur lors de l'envoi",
+        description: errMsg,
+        variant: "destructive",
+        duration: 6000,
+      });
     } finally {
       setLoading(false);
     }

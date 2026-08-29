@@ -38,7 +38,11 @@ export default function Process() {
 
         <div className="hidden md:grid grid-cols-5 gap-0 border-t border-navy/15">
           {processSteps.map((s, i) => (
-            <Reveal key={i} delay={i * 90} className="relative pt-8 pr-6 border-r border-navy/15 last:border-r-0">
+            <Reveal
+              key={i}
+              delay={i * 90}
+              className="relative pt-8 pr-6 lg:pr-8 pl-6 lg:pl-8 first:pl-0 last:pr-0 border-r border-navy/15 last:border-r-0"
+            >
               <span className="font-heading font-bold text-5xl text-electric block tabular-nums leading-none">
                 {String(i + 1).padStart(2, '0')}
               </span>

@@ -78,7 +78,7 @@ export default function Hero() {
           <Reveal className="relative aspect-[4/5] sm:aspect-[5/4] lg:aspect-[4/5] xl:aspect-[5/6] w-full overflow-hidden">
             <EditableImage
               src={img('hero_image') || HERO_IMG}
-              alt="Installation électrique Saynarelec"
+              alt="Saynarelec — Entreprise d'électricité générale et solaire en Belgique"
               onChange={(url) => setImage('hero_image', url)}
               className="w-full h-full"
             />

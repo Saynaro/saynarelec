@@ -1,4 +1,5 @@
 import React, { useState } from 'react';
+import { Link } from 'react-router-dom';
 import { useContent } from '@/lib/content';
 import { useLang } from '@/lib/i18n';
 import EditableImage from './cms/EditableImage';
@@ -17,6 +18,17 @@ export default function Services() {
   const [editIdx, setEditIdx] = useState(null);
   const [addOpen, setAddOpen] = useState(false);
   const [deleteTargetIdx, setDeleteTargetIdx] = useState(null);
+
+  const getServiceSlug = (name = '') => {
+    const n = name.toLowerCase();
+    if (n.includes('générale') || n.includes('general') || n.includes('algemene')) return 'electricite-generale';
+    if (n.includes('rénovation') || n.includes('renovation') || n.includes('renovatie')) return 'renovation-electrique';
+    if (n.includes('conformité') || n.includes('conformite') || n.includes('arei')) return 'mise-en-conformite';
+    if (n.includes('dépannage') || n.includes('depannage') || n.includes('herstelling')) return 'depannage-electrique';
+    if (n.includes('éclairage') || n.includes('eclairage') || n.includes('verlichting') || n.includes('lighting')) return 'eclairage';
+    if (n.includes('solaire') || n.includes('solar') || n.includes('zon')) return 'panneaux-solaires';
+    return 'electricite-generale';
+  };
 
   const safeActive = Math.min(active, services.length - 1);
   const go = (href) => {
@@ -69,12 +81,15 @@ export default function Services() {
                     >
                       <div className="w-full text-left py-6 md:py-7 px-2 md:px-4 flex items-center gap-5 md:gap-8">
                         {/* Clickable row — desktop: hover only, mobile: toggles accordion */}
-                        <button
+                        <div
+                          role="button"
+                          tabIndex={0}
                           onClick={() => {
                             setActive(i);
                             toggleMobile(i);
                           }}
-                          className="flex items-center gap-5 md:gap-8 flex-1 text-left cursor-pointer"
+                          onKeyDown={(e) => (e.key === 'Enter' || e.key === ' ') && toggleMobile(i)}
+                          className="flex items-center gap-5 md:gap-8 flex-1 text-left cursor-pointer select-none"
                         >
                           <span className={`font-heading font-semibold text-2xl md:text-3xl tabular-nums transition-colors duration-200 ${isActiveDesktop ? 'text-solar' : 'text-navy/30'}`}>
                             {String(i + 1).padStart(2, '0')}
@@ -83,12 +98,19 @@ export default function Services() {
                             <span className={`block font-heading font-medium text-xl md:text-3xl tracking-tight transition-colors duration-200 ${isActiveDesktop ? 'text-electric' : 'text-navy'}`}>
                               {s.name}
                             </span>
-                            {/* Description — desktop: visible on hover via max-h trick */}
-                            <span className={`hidden md:block text-sm md:text-base text-navy/60 mt-1 overflow-hidden transition-all duration-300 ${isActiveDesktop ? 'max-h-20 opacity-100' : 'max-h-0 opacity-0'}`}>
+                            {/* Description — desktop: visible on hover */}
+                            <span className={`hidden md:block text-sm md:text-base text-navy/60 mt-1 overflow-hidden transition-all duration-300 ${isActiveDesktop ? 'max-h-24 opacity-100' : 'max-h-0 opacity-0'}`}>
                               {s.desc}
+                              <Link
+                                to={`/services/${getServiceSlug(s.name)}`}
+                                onClick={(e) => e.stopPropagation()}
+                                className="inline-block ml-2 text-xs font-bold uppercase tracking-label text-electric hover:text-solar underline transition-colors"
+                              >
+                                En savoir plus →
+                              </Link>
                             </span>
                           </span>
-                        </button>
+                        </div>
 
                         {/* ── Mobile chevron ── only visible on mobile ─── */}
                         <button
@@ -154,6 +176,15 @@ export default function Services() {
                               </div>
                             </div>
                           )}
+                          {/* Link to dedicated service page */}
+                          <div className="pt-2">
+                            <Link
+                              to={`/services/${getServiceSlug(s.name)}`}
+                              className="inline-flex items-center gap-1.5 text-xs font-bold uppercase tracking-label text-electric hover:text-solar transition-colors"
+                            >
+                              Découvrir la prestation complète →
+                            </Link>
+                          </div>
                         </div>
                       </div>
                     </div>

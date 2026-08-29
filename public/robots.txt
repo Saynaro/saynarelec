@@ -1,0 +1,6 @@
+# robots.txt for https://saynarelec.com
+User-agent: *
+Allow: /
+
+# Sitemaps
+Sitemap: https://saynarelec.com/sitemap.xml

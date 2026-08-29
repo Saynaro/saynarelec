@@ -87,7 +87,7 @@ export default function RealisationItem({
           <div className="relative w-full h-full overflow-hidden">
             <EditableImage
               src={item.image}
-              alt={item.cat}
+              alt={`${item.cat || 'Projet électricité'} — Réalisation Saynarelec en Belgique`}
               onChange={(url) => onMeta({ image: url })}
               onClear={() => onMeta({ image: '' })}
               className="w-full h-full transition-transform duration-700 ease-out group-hover:scale-[1.04]"

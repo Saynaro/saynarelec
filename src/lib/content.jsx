@@ -4,7 +4,7 @@ import { useLang } from '@/lib/i18n';
 import { DEFAULT_CONTENT } from '@/lib/content-defaults';
 
 const ContentContext = createContext(null);
-const ADMIN_EMAIL = 'saynarelec@gmail.com';
+const ADMIN_EMAILS = ['contact@saynarelec.com', 'saynarelec@gmail.com'];
 const ADMIN_PASSWORD = 'Ibragim1234';
 const SS_KEY = 'sayna_admin';
 const LS_FALLBACK_KEY = 'sayna_site_content'; // fallback если Supabase не настроен
@@ -42,6 +42,24 @@ const fillMissingLangs = (i18nObj) => {
 const normalizeContent = (saved) => {
   if (!saved) return saved;
   const out = { ...saved };
+
+  // Migrate old email to new domain email
+  if (out.contact_email) {
+    if (typeof out.contact_email === 'string' && (out.contact_email === 'saynarelec@gmail.com' || !out.contact_email)) {
+      out.contact_email = 'contact@saynarelec.com';
+    } else if (isObj(out.contact_email)) {
+      if (out.contact_email.fr === 'saynarelec@gmail.com' || out.contact_email.en === 'saynarelec@gmail.com' || !out.contact_email.fr) {
+        out.contact_email = { fr: 'contact@saynarelec.com', nl: 'contact@saynarelec.com', en: 'contact@saynarelec.com' };
+      }
+    }
+  }
+
+  // Migrate old form label 'Nom' to 'Nom et prénom'
+  if (out.contact_form_name && isObj(out.contact_form_name)) {
+    if (out.contact_form_name.fr === 'Nom') {
+      out.contact_form_name.fr = 'Nom et prénom';
+    }
+  }
 
   // Sync universal keys (stats/numbers/email) across languages if any language was customized
   UNIVERSAL_KEYS.forEach((k) => {
@@ -182,7 +200,7 @@ export function ContentProvider({ children }) {
   );
 
   const login = (email, password) => {
-    const emailOk = email.trim().toLowerCase() === ADMIN_EMAIL;
+    const emailOk = ADMIN_EMAILS.includes(email.trim().toLowerCase());
     const passOk = password === ADMIN_PASSWORD;
     if (emailOk && passOk) {
       setIsAdmin(true);
