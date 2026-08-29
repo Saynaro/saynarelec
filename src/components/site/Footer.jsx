@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
 import { Link } from 'react-router-dom';
 import { useLang } from '@/lib/i18n';
 import { useContent } from '@/lib/content';
@@ -9,6 +9,25 @@ export default function Footer() {
   const { t, lang, setLang } = useLang();
   const { isAdmin, logout } = useContent();
   const [loginOpen, setLoginOpen] = useState(false);
+
+  useEffect(() => {
+    const metaTheme = document.querySelector('meta[name="theme-color"]');
+    const onScroll = () => {
+      const scrollPos = window.scrollY + window.innerHeight;
+      const threshold = document.documentElement.scrollHeight - 350;
+      if (scrollPos >= threshold) {
+        if (metaTheme) metaTheme.setAttribute('content', '#123B66');
+      } else {
+        if (metaTheme) metaTheme.setAttribute('content', '#F7F5F0');
+      }
+    };
+    window.addEventListener('scroll', onScroll, { passive: true });
+    onScroll();
+    return () => {
+      window.removeEventListener('scroll', onScroll);
+      if (metaTheme) metaTheme.setAttribute('content', '#F7F5F0');
+    };
+  }, []);
 
   const go = (href) => {
     const el = document.querySelector(href);
@@ -132,7 +151,7 @@ export default function Footer() {
       </div>
 
       <div className="border-t border-white/15">
-        <div className="max-w-[1400px] mx-auto px-5 md:px-10 py-6 flex flex-col sm:flex-row justify-between items-center gap-3 text-xs text-white/50">
+        <div className="max-w-[1400px] mx-auto px-5 md:px-10 py-6 pb-[max(1.5rem,env(safe-area-inset-bottom))] flex flex-col sm:flex-row justify-between items-center gap-3 text-xs text-white/50">
           <span className="flex items-center gap-2">
             © {new Date().getFullYear()} Saynarelec — <EditField k="footer_rights" as="span" />
             <button
