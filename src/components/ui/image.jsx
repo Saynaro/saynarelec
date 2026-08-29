@@ -24,7 +24,7 @@ function ImageWrapper({
   return (
     <span
       ref={innerRef}
-      className={cn("inline-block relative", className)}
+      className={cn("inline-block relative w-full h-full overflow-hidden", className)}
       style={{ aspectRatio, ...style }}
     >
       {children}
@@ -76,7 +76,7 @@ function ResponsiveImage({
           })}
           alt=""
           aria-hidden="true"
-          className="w-full h-full inset-0 absolute"
+          className="w-full h-full inset-0 absolute object-cover"
           style={{
             objectFit: fittingType === "fit" ? "contain" : "cover",
             filter: "blur(10px)",
@@ -138,9 +138,16 @@ export function Image({
     if (nextMode === IMAGE_LOAD_MODE.FALLBACK) onError?.(event)
   }
 
+  const isCover = fittingType === "fill" || fittingType === "cover";
+  const defaultFitClass = isCover ? "object-cover" : fittingType === "fit" ? "object-contain" : "";
+  const mergedClass = cn("w-full h-full", defaultFitClass, className);
+
   const imageProps = {
-    className,
-    style,
+    className: mergedClass,
+    style: {
+      objectFit: isCover ? "cover" : fittingType === "fit" ? "contain" : undefined,
+      ...style,
+    },
     alt,
     ...props,
     onError: handleError,

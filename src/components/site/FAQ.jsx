@@ -1,74 +1,60 @@
 import React, { useState } from 'react';
 import { useLang } from '@/lib/i18n';
+import { useContent } from '@/lib/content';
 import Reveal from './Reveal';
-import { ChevronDown, HelpCircle } from 'lucide-react';
+import FaqModal from './cms/FaqModal';
+import ConfirmModal from './cms/ConfirmModal';
+import { ChevronDown, Pencil, Trash2, Plus } from 'lucide-react';
 
-export const faqData = {
-  fr: [
-    {
-      q: "Dans quelles régions de Belgique l'entreprise Saynarelec intervient-elle ?",
-      a: "Saynarelec intervient dans toute la Belgique, notamment en région bruxelloise (Bruxelles-Capitale), en Wallonie (Liège, Namur, Charleroi, Brabant wallon, Mons) et en Flandre, que ce soit pour des chantiers résidentiels ou professionnels."
-    },
-    {
-      q: "Qu'est-ce que la mise en conformité RGIE et quand est-elle obligatoire en Belgique ?",
-      a: "Le RGIE (Règlement Général sur les Installations Électriques) est la norme officielle en Belgique. Un contrôle de conformité est obligatoire lors de la vente d'un bien immobilier, lors d'une modification importante du tableau électrique, pour un nouveau compteur ou tous les 25 ans. Saynarelec réalise l'audit, remet aux normes votre installation et prépare le passage de l'organisme de contrôle agréé."
-    },
-    {
-      q: "Combien coûte une installation ou une rénovation électrique avec Saynarelec ?",
-      a: "Le coût dépend de la superficie, de l'état du réseau existant, du nombre de points lumineux/prises et de la puissance requise. Saynarelec propose des devis gratuits, transparents et détaillés sans engagement après étude précise de votre projet."
-    },
-    {
-      q: "Proposez-vous un service de dépannage électrique d'urgence ?",
-      a: "Oui, Saynarelec assure la recherche de pannes, court-circuits, disjonctions intempestives et coupures de courant pour rétablir la sécurité et l'alimentation de vos installations dans les meilleurs délais."
-    },
-    {
-      q: "Quelle est la rentabilité de l'installation de panneaux solaires en Belgique ?",
-      a: "Avec les hausses tarifaires de l'électricité, une installation photovoltaïque bien dimensionnée permet de réduire drastiquement vos factures d'énergie avec un retour sur investissement moyen de 5 à 7 ans. Saynarelec dimensionne vos panneaux pour maximiser votre autoconsommation."
-    },
-    {
-      q: "Comment demander un devis électrique à Saynarelec ?",
-      a: "Vous pouvez nous contacter directement par e-mail à contact@saynarelec.com ou remplir le formulaire de contact sur notre site. Nous vous recontactons sous 24h à 48h pour fixer un rendez-vous ou étudier vos plans."
-    }
-  ],
-  nl: [
-    {
-      q: "In welke regio's van België is Saynarelec actief?",
-      a: "Saynarelec is actief in heel België, inclusief Brussel, Wallonië (Luik, Namen, Charleroi) en Vlaanderen, voor zowel particuliere als professionele projecten."
-    },
-    {
-      q: "Wat is AREI-gelijkvormigheid en wanneer is het verplicht?",
-      a: "Het AREI (Algemeen Reglement op de Elektrische Installaties) is de wettelijke norm in België. Een keuring is verplicht bij de verkoop van een woning, na grote renovaties of elke 25 jaar. Saynarelec brengt uw installatie volledig in orde voor de keuring."
-    },
-    {
-      q: "Hoe vraag ik een gratis offerte aan bij Saynarelec?",
-      a: "U kunt contact opnemen via het contactformulier of mailen naar contact@saynarelec.com. Wij nemen binnen 24-48 uur contact met u op."
-    }
-  ],
-  en: [
-    {
-      q: "In which areas of Belgium does Saynarelec operate?",
-      a: "Saynarelec operates across Belgium, including Brussels, Wallonia (Liège, Namur, Charleroi), and Flanders, for both residential and commercial electrical projects."
-    },
-    {
-      q: "What is RGIE / AREI compliance and when is it mandatory?",
-      a: "RGIE/AREI is the official Belgian regulation for electrical safety. Certification is mandatory when selling a property, upgrading an electrical panel, or every 25 years. Saynarelec upgrades your system to pass official inspection."
-    },
-    {
-      q: "How can I request a free quote from Saynarelec?",
-      a: "You can reach us via our online contact form or by emailing contact@saynarelec.com. We respond within 24 to 48 business hours."
-    }
-  ]
-};
-
-export default function FAQ({ customFaqs = null, className = "" }) {
+export default function FAQ({ customFaqs = null, onUpdateCustomFaqs = null, className = "" }) {
   const { lang } = useLang();
+  const { isAdmin, faqs, updateFaq, addFaq, deleteFaq } = useContent();
   const [openIndex, setOpenIndex] = useState(0);
 
-  const currentLang = faqData[lang] ? lang : 'fr';
-  const list = customFaqs || faqData[currentLang] || faqData.fr;
+  // CMS modal state
+  const [editIdx, setEditIdx] = useState(null);
+  const [addOpen, setAddOpen] = useState(false);
+  const [deleteIdx, setDeleteIdx] = useState(null);
+
+  // List of FAQs to render
+  const list = customFaqs || faqs || [];
 
   const toggle = (idx) => {
     setOpenIndex(openIndex === idx ? null : idx);
+  };
+
+  const handleSave = ({ q, a }) => {
+    if (editIdx !== null) {
+      if (onUpdateCustomFaqs && customFaqs) {
+        const next = customFaqs.map((item, i) => (i === editIdx ? { q, a } : item));
+        onUpdateCustomFaqs(next);
+      } else {
+        updateFaq(editIdx, { q, a });
+      }
+      setEditIdx(null);
+    } else if (addOpen) {
+      if (onUpdateCustomFaqs && customFaqs) {
+        const next = [...customFaqs, { q, a }];
+        onUpdateCustomFaqs(next);
+        setOpenIndex(customFaqs.length);
+      } else {
+        addFaq({ q, a });
+        setOpenIndex(list.length);
+      }
+      setAddOpen(false);
+    }
+  };
+
+  const handleDelete = () => {
+    if (deleteIdx === null) return;
+    if (onUpdateCustomFaqs && customFaqs) {
+      const next = customFaqs.filter((_, i) => i !== deleteIdx);
+      onUpdateCustomFaqs(next);
+    } else {
+      deleteFaq(deleteIdx);
+    }
+    if (openIndex === deleteIdx) setOpenIndex(null);
+    setDeleteIdx(null);
   };
 
   return (
@@ -80,7 +66,7 @@ export default function FAQ({ customFaqs = null, className = "" }) {
             <span className="text-solar font-bold tracking-label text-[11px] uppercase">
               {lang === 'nl' ? 'VEELGESTELDE VRAGEN' : lang === 'en' ? 'FREQUENTLY ASKED QUESTIONS' : 'FOIRE AUX QUESTIONS'}
             </span>
-            <span className="w-6 h-px bg-solar" />
+            <span className="w-8 h-px bg-solar" />
           </div>
           <h2 className="font-heading font-semibold tracking-tightest text-navy text-3xl sm:text-4xl md:text-5xl leading-[1.05]">
             {lang === 'nl' ? 'Vragen over uw elektriciteitswerken ?' : lang === 'en' ? 'Questions About Your Electrical Works ?' : 'Questions fréquentes sur nos services d\'électricité'}
@@ -98,32 +84,60 @@ export default function FAQ({ customFaqs = null, className = "" }) {
           {list.map((item, idx) => {
             const isOpen = openIndex === idx;
             return (
-              <Reveal key={idx} delay={idx * 50}>
+              <Reveal key={idx} delay={idx * 40}>
                 <div
                   className={`border rounded-2xl transition-all duration-200 overflow-hidden ${
                     isOpen ? 'border-electric bg-white shadow-md' : 'border-navy/15 bg-white/60 hover:bg-white'
                   }`}
                 >
-                  <button
-                    onClick={() => toggle(idx)}
-                    className="w-full text-left p-5 sm:p-6 flex items-center justify-between gap-4 cursor-pointer"
-                    aria-expanded={isOpen}
-                  >
-                    <span className="font-heading font-medium text-navy text-lg sm:text-xl pr-2">
-                      {item.q}
-                    </span>
-                    <span
-                      className={`w-8 h-8 rounded-full flex items-center justify-center shrink-0 transition-transform duration-200 ${
-                        isOpen ? 'bg-electric text-white rotate-180' : 'bg-navy/5 text-navy/60'
-                      }`}
+                  <div className="flex items-center justify-between p-5 sm:p-6 gap-3">
+                    <button
+                      onClick={() => toggle(idx)}
+                      className="flex-1 text-left flex items-center justify-between gap-4 cursor-pointer"
+                      aria-expanded={isOpen}
                     >
-                      <ChevronDown size={18} />
-                    </span>
-                  </button>
+                      <span className="font-heading font-medium text-navy text-lg sm:text-xl pr-2">
+                        {item.q}
+                      </span>
+                      <span
+                        className={`w-8 h-8 rounded-full flex items-center justify-center shrink-0 transition-transform duration-200 ${
+                          isOpen ? 'bg-electric text-white rotate-180' : 'bg-navy/5 text-navy/60'
+                        }`}
+                      >
+                        <ChevronDown size={18} />
+                      </span>
+                    </button>
+
+                    {/* Admin Action Buttons */}
+                    {isAdmin && (
+                      <div className="flex items-center gap-1 shrink-0 ml-2 border-l border-navy/10 pl-2">
+                        <button
+                          onClick={(e) => {
+                            e.stopPropagation();
+                            setEditIdx(idx);
+                          }}
+                          className="p-1.5 text-navy/40 hover:text-solar transition-colors cursor-pointer"
+                          title="Modifier cette question"
+                        >
+                          <Pencil size={15} />
+                        </button>
+                        <button
+                          onClick={(e) => {
+                            e.stopPropagation();
+                            setDeleteIdx(idx);
+                          }}
+                          className="p-1.5 text-red-400/60 hover:text-red-600 transition-colors cursor-pointer"
+                          title="Supprimer cette question"
+                        >
+                          <Trash2 size={15} />
+                        </button>
+                      </div>
+                    )}
+                  </div>
 
                   <div
                     className={`transition-all duration-300 ease-in-out ${
-                      isOpen ? 'max-h-96 opacity-100 px-5 sm:px-6 pb-6' : 'max-h-0 opacity-0 overflow-hidden px-5 sm:px-6 pb-0'
+                      isOpen ? 'max-h-[500px] opacity-100 px-5 sm:px-6 pb-6' : 'max-h-0 opacity-0 overflow-hidden px-5 sm:px-6 pb-0'
                     }`}
                   >
                     <div className="pt-2 border-t border-navy/10 text-navy/75 text-sm sm:text-base leading-relaxed">
@@ -134,8 +148,45 @@ export default function FAQ({ customFaqs = null, className = "" }) {
               </Reveal>
             );
           })}
+
+          {/* Admin Add FAQ Button */}
+          {isAdmin && (
+            <div className="pt-4 text-center">
+              <button
+                onClick={() => setAddOpen(true)}
+                className="inline-flex items-center gap-2 border border-dashed border-navy/30 hover:border-electric text-navy/70 hover:text-electric px-6 py-3 text-xs font-bold uppercase tracking-label transition-all cursor-pointer bg-white/50"
+              >
+                <Plus size={16} /> Ajouter une question fréquente
+              </button>
+            </div>
+          )}
         </div>
       </div>
+
+      {/* Edit & Add Modals */}
+      <FaqModal
+        open={editIdx !== null}
+        onClose={() => setEditIdx(null)}
+        initial={editIdx !== null ? list[editIdx] : null}
+        onSave={handleSave}
+      />
+
+      <FaqModal
+        open={addOpen}
+        onClose={() => setAddOpen(false)}
+        initial={null}
+        onSave={handleSave}
+      />
+
+      <ConfirmModal
+        open={deleteIdx !== null}
+        title="Supprimer cette question"
+        message="Êtes-vous sûr de vouloir supprimer cette question fréquente ?"
+        confirmText="Supprimer"
+        cancelText="Annuler"
+        onConfirm={handleDelete}
+        onCancel={() => setDeleteIdx(null)}
+      />
     </section>
   );
 }

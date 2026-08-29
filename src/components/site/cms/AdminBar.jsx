@@ -39,7 +39,7 @@ export default function AdminBar() {
       <div className="flex items-center gap-2">
         <button
           onClick={logout}
-          className="bg-solar text-navy text-[11px] uppercase tracking-label font-bold px-3.5 py-2 inline-flex items-center gap-1.5 hover:bg-white transition-colors cursor-pointer"
+          className="bg-solar text-navy text-[11px] uppercase tracking-label font-bold px-3.5 py-2 inline-flex items-center gap-1.5 hover:bg-white transition-colors cursor-pointer shadow-xs"
         >
           <LogOut size={14} /> Déconnexion
         </button>

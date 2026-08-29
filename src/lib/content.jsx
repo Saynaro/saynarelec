@@ -74,6 +74,8 @@ const normalizeContent = (saved) => {
   if (Array.isArray(out.realisations)) {
     out.realisations = out.realisations.map((r) => ({
       ...r,
+      colSpan: typeof r.colSpan === 'number' ? r.colSpan : Number(r.colSpan) || 6,
+      rowSpan: typeof r.rowSpan === 'number' ? r.rowSpan : Number(r.rowSpan) || 36,
       cat: fillMissingLangs(r.cat),
       desc: fillMissingLangs(r.desc),
     }));
@@ -338,7 +340,20 @@ export function ContentProvider({ children }) {
   const deleteService = (i) => save({ services: arr('services', content).filter((_, idx) => idx !== i) });
   const updateServiceImage = (i, url) => {
     const a = arr('services', content).map((s, idx) => (idx === i ? { ...s, image: url } : s));
-    save({ services: a });
+    const slugList = [
+      'electricite-generale',
+      'renovation-electrique',
+      'mise-en-conformite',
+      'depannage-electrique',
+      'eclairage',
+      'panneaux-solaires',
+    ];
+    const slug = slugList[i];
+    const sp = { ...(content.service_pages ?? DEFAULT_CONTENT.service_pages) };
+    if (slug && sp[slug]) {
+      sp[slug] = { ...sp[slug], image: url };
+    }
+    save({ services: a, service_pages: sp });
   };
 
   // realisations CRUD
@@ -410,6 +425,191 @@ export function ContentProvider({ children }) {
   const addContactType = (label) => save({ contact_types: [...arr('contact_types', content), { fr: label, nl: label, en: label }] });
   const deleteContactType = (i) => save({ contact_types: arr('contact_types', content).filter((_, idx) => idx !== i) });
 
+  // FAQs CRUD
+  const rawFaqs = content.faqs ?? DEFAULT_CONTENT.faqs;
+  const faqs = (rawFaqs || []).map((item) => ({
+    q: isObj(item.q) ? item.q[lang] || item.q.fr || '' : item.q,
+    a: isObj(item.a) ? item.a[lang] || item.a.fr || '' : item.a,
+  }));
+
+  const updateFaq = (i, { q, a }) => {
+    const raw = content.faqs ?? DEFAULT_CONTENT.faqs;
+    const next = raw.map((item, idx) => {
+      if (idx !== i) return item;
+      const curQ = isObj(item.q) ? item.q : { fr: item.q, nl: item.q, en: item.q };
+      const curA = isObj(item.a) ? item.a : { fr: item.a, nl: item.a, en: item.a };
+      return {
+        q: { ...curQ, [lang]: q },
+        a: { ...curA, [lang]: a },
+      };
+    });
+    save({ faqs: next });
+  };
+
+  const addFaq = ({ q, a }) => {
+    const raw = content.faqs ?? DEFAULT_CONTENT.faqs;
+    const next = [
+      ...raw,
+      {
+        q: { fr: q, nl: q, en: q },
+        a: { fr: a, nl: a, en: a },
+      },
+    ];
+    save({ faqs: next });
+  };
+
+  const deleteFaq = (i) => {
+    const raw = content.faqs ?? DEFAULT_CONTENT.faqs;
+    save({ faqs: raw.filter((_, idx) => idx !== i) });
+  };
+
+  // Mapping between service slugs and indexes in "Nos métiers"
+  const SLUG_TO_INDEX = {
+    'electricite-generale': 0,
+    'electricite': 0,
+    'installation-electrique': 0,
+    'renovation-electrique': 1,
+    'mise-en-conformite': 2,
+    'depannage-electrique': 3,
+    'depannage': 3,
+    'eclairage': 4,
+    'panneaux-solaires': 5,
+  };
+
+  // Service Pages Data & CRUD
+  const getServicePage = (slug) => {
+    const sp = content.service_pages ?? DEFAULT_CONTENT.service_pages;
+    let targetKey = slug;
+    let target = sp[targetKey];
+    if (!target) {
+      for (const k in sp) {
+        if (sp[k].aliases?.includes(slug)) {
+          targetKey = k;
+          target = sp[k];
+          break;
+        }
+      }
+    }
+    const base = target || DEFAULT_CONTENT.service_pages[slug] || {};
+
+    const resolveField = (val) => {
+      if (!val) return '';
+      if (typeof val === 'string') return val;
+      if (isObj(val)) return val[lang] || val.fr || val.nl || val.en || '';
+      return val;
+    };
+
+    // Get matching image from "Nos métiers" if available
+    const idx = SLUG_TO_INDEX[slug] !== undefined ? SLUG_TO_INDEX[slug] : SLUG_TO_INDEX[targetKey];
+    const srvList = arr('services', content);
+    const serviceImg = idx !== undefined && srvList[idx]?.image ? srvList[idx].image : base.image;
+
+    // Resolve highlights for current language
+    let resolvedHighlights = [];
+    if (isObj(base.highlights) && !Array.isArray(base.highlights)) {
+      resolvedHighlights = (base.highlights[lang] || base.highlights.fr || base.highlights.nl || base.highlights.en || []).map(resolveField);
+    } else if (Array.isArray(base.highlights)) {
+      resolvedHighlights = base.highlights.map(resolveField);
+    }
+
+    // Resolve detailed sections for current language
+    let resolvedSections = [];
+    if (isObj(base.sections) && !Array.isArray(base.sections)) {
+      const rawSecs = base.sections[lang] || base.sections.fr || base.sections.nl || base.sections.en || [];
+      resolvedSections = rawSecs.map((sec) => ({
+        title: resolveField(sec.title),
+        text: resolveField(sec.text),
+      }));
+    } else if (Array.isArray(base.sections)) {
+      resolvedSections = base.sections.map((sec) => ({
+        title: resolveField(sec.title),
+        text: resolveField(sec.text),
+      }));
+    }
+
+    // Resolve FAQs for current language
+    const resolvedFaqs = (base.faqs || []).map((faq) => ({
+      q: resolveField(faq.q),
+      a: resolveField(faq.a),
+    }));
+
+    return {
+      slug: base.slug || targetKey,
+      aliases: base.aliases || [],
+      title: resolveField(base.title),
+      metaDescription: resolveField(base.metaDescription),
+      h1: resolveField(base.h1),
+      badge: resolveField(base.badge),
+      lead: resolveField(base.lead),
+      alt: resolveField(base.alt),
+      highlights: resolvedHighlights,
+      sections: resolvedSections,
+      faqs: resolvedFaqs,
+      image: serviceImg || base.image,
+    };
+  };
+
+  const updateServicePage = (slug, partial) => {
+    const sp = { ...(content.service_pages ?? DEFAULT_CONTENT.service_pages) };
+    let targetKey = slug;
+    if (!sp[targetKey]) {
+      for (const k in sp) {
+        if (sp[k].aliases?.includes(slug)) {
+          targetKey = k;
+          break;
+        }
+      }
+    }
+    const current = sp[targetKey] || DEFAULT_CONTENT.service_pages[targetKey] || {};
+    const updated = { ...current };
+
+    ['title', 'metaDescription', 'h1', 'badge', 'lead', 'alt'].forEach((field) => {
+      if (partial[field] !== undefined) {
+        const val = partial[field];
+        if (typeof val === 'string') {
+          const curObj = isObj(current[field]) ? current[field] : { fr: current[field], nl: current[field], en: current[field] };
+          updated[field] = { ...curObj, [lang]: val };
+        } else {
+          updated[field] = val;
+        }
+      }
+    });
+
+    if (partial.highlights !== undefined) {
+      if (isObj(current.highlights) && !Array.isArray(current.highlights)) {
+        updated.highlights = { ...current.highlights, [lang]: partial.highlights };
+      } else {
+        updated.highlights = partial.highlights;
+      }
+    }
+
+    if (partial.sections !== undefined) {
+      if (isObj(current.sections) && !Array.isArray(current.sections)) {
+        updated.sections = { ...current.sections, [lang]: partial.sections };
+      } else {
+        updated.sections = partial.sections;
+      }
+    }
+
+    if (partial.faqs !== undefined) {
+      updated.faqs = partial.faqs;
+    }
+
+    if (partial.image !== undefined) {
+      updated.image = partial.image;
+    }
+
+    sp[targetKey] = updated;
+
+    const idx = SLUG_TO_INDEX[slug] !== undefined ? SLUG_TO_INDEX[slug] : SLUG_TO_INDEX[targetKey];
+    if (partial.image && idx !== undefined) {
+      const srvList = arr('services', content).map((s, i) => (i === idx ? { ...s, image: partial.image } : s));
+      save({ service_pages: sp, services: srvList });
+    } else {
+      save({ service_pages: sp });
+    }
+  };
+
   return (
     <ContentContext.Provider
       value={{
@@ -422,6 +622,8 @@ export function ContentProvider({ children }) {
         updateRealisation, updateRealisationMeta, addRealisation, deleteRealisation, reorderRealisations,
         processSteps, updateStep, addStep, deleteStep,
         contactTypes, addContactType, deleteContactType,
+        faqs, rawFaqs, updateFaq, addFaq, deleteFaq,
+        getServicePage, updateServicePage,
       }}
     >
       {children}

@@ -112,7 +112,7 @@ export default function Contact() {
             </a>
           </div>
 
-          <div className="mt-8 grid grid-cols-2 gap-6 border-t border-navy/15 pt-8">
+          <div className="hidden lg:grid mt-8 grid-cols-2 gap-6 border-t border-navy/15 pt-8">
             <div>
               {isAdmin
                 ? <EditField k="about_years_num" as="span" className="block font-heading font-bold text-5xl text-navy leading-none" />
@@ -128,7 +128,13 @@ export default function Contact() {
           </div>
         </Reveal>
 
-        <Reveal className="col-span-12 lg:col-span-7 lg:pl-8" delay={120}>
+        <Reveal className="col-span-12 lg:col-span-7 lg:pl-8 mt-6 lg:mt-0 pt-4 lg:pt-0" delay={120}>
+          <div className="lg:hidden mb-6 flex items-center gap-3">
+            <span className="text-solar font-bold tracking-label text-[10px] uppercase whitespace-nowrap">
+              <EditField k="contact_or_form" as="span" />
+            </span>
+            <span className="flex-1 h-px bg-navy/15" />
+          </div>
           <form onSubmit={onSubmit} className="grid grid-cols-2 gap-x-6 gap-y-7">
             <div className="col-span-2 sm:col-span-1">
               <label className="block text-[10px] uppercase tracking-label text-navy/55 mb-1">

@@ -1,6 +1,6 @@
 import React from 'react';
-import { LanguageProvider, useLang } from '@/lib/i18n';
-import { ContentProvider } from '@/lib/content';
+import { useLang } from '@/lib/i18n';
+import { useContent } from '@/lib/content';
 import SEO from '@/components/SEO';
 import Header from '@/components/site/Header';
 import Hero from '@/components/site/Hero';
@@ -9,7 +9,7 @@ import About from '@/components/site/About';
 import Realisations from '@/components/site/Realisations';
 import SolarSection from '@/components/site/SolarSection';
 import Process from '@/components/site/Process';
-import FAQ, { faqData } from '@/components/site/FAQ';
+import FAQ from '@/components/site/FAQ';
 import FinalCTA from '@/components/site/FinalCTA';
 import Contact from '@/components/site/Contact';
 import Footer from '@/components/site/Footer';
@@ -17,8 +17,9 @@ import AdminBar from '@/components/site/cms/AdminBar';
 
 function HomeContent() {
   const { lang, t } = useLang();
+  const { faqs } = useContent();
 
-  const currentFaqs = faqData[lang] || faqData.fr;
+  const currentFaqs = faqs || [];
 
   const homeSchema = {
     "@context": "https://schema.org",

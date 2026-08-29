@@ -1,7 +1,8 @@
 import React, { useRef, useState } from 'react';
 import { Image } from '@/components/ui/image';
-import { uploadToCloudinary, isCloudinaryConfigured } from '@/lib/cloudinary';
+import { uploadToCloudinary } from '@/lib/cloudinary';
 import { useContent } from '@/lib/content';
+import { cn } from '@/lib/utils';
 import ConfirmModal from './ConfirmModal';
 
 export default function EditableImage({
@@ -10,6 +11,7 @@ export default function EditableImage({
   onClear = null,
   alt = '',
   className = '',
+  btnClassName = '',
   fittingType = 'fill',
 }) {
   const { isAdmin } = useContent();
@@ -26,43 +28,52 @@ export default function EditableImage({
       const url = await uploadToCloudinary(file);
       onChange(url);
     } catch (e) {
-      console.error('upload failed', e);
-      setError(isCloudinaryConfigured() ? 'Erreur upload.' : 'Cloudinary non configuré.');
+      console.error('Upload error:', e);
+      setError("Erreur lors de l'envoi de l'image.");
     } finally {
       setUploading(false);
     }
   };
 
   return (
-    <div className="relative w-full h-full">
-      <Image src={src} alt={alt} fittingType={fittingType} className={className} />
+    <div className="relative w-full h-full overflow-hidden">
+      <Image
+        src={src}
+        alt={alt}
+        fittingType={fittingType}
+        className={cn("w-full h-full object-cover", className)}
+      />
       {isAdmin && (
-        <div className="absolute top-2 right-2 flex flex-col items-end gap-1.5 z-30">
+        <div className={cn("absolute top-3 right-3 flex flex-col items-end gap-1.5 z-20", btnClassName)}>
           <div className="flex gap-1.5">
             <button
-              onClick={() => isCloudinaryConfigured() ? inputRef.current?.click() : setError('Cloudinary non configuré dans .env')}
+              onClick={() => inputRef.current?.click()}
               disabled={uploading}
-              className="bg-electric text-white text-[10px] uppercase tracking-label px-2.5 py-1.5 hover:bg-navy disabled:opacity-60 cursor-pointer"
+              className="bg-electric text-white text-[10px] uppercase tracking-label px-2.5 py-1.5 hover:bg-navy disabled:opacity-60 cursor-pointer shadow-md"
             >
               {uploading ? '…' : 'Remplacer'}
             </button>
             {onClear && (
               <button
                 onClick={() => setConfirmClearOpen(true)}
-                className="bg-white text-navy text-[10px] uppercase tracking-label px-2.5 py-1.5 hover:bg-red-600 hover:text-white transition-colors cursor-pointer"
+                className="bg-white text-navy text-[10px] uppercase tracking-label px-2.5 py-1.5 hover:bg-red-600 hover:text-white transition-colors cursor-pointer shadow-md"
               >
                 Supprimer
               </button>
             )}
           </div>
           {error && (
-            <span className="bg-red-500 text-white text-[9px] px-2 py-1 max-w-[180px] text-right">{error}</span>
+            <span className="bg-red-500 text-white text-[9px] px-2 py-1 max-w-[180px] text-right shadow">
+              {error}
+            </span>
           )}
         </div>
       )}
       {uploading && (
-        <div className="absolute inset-0 bg-navy/40 flex items-center justify-center z-30">
-          <span className="text-white text-sm">Upload…</span>
+        <div className="absolute inset-0 bg-navy/50 backdrop-blur-xs flex items-center justify-center z-30">
+          <span className="text-white text-xs font-bold uppercase tracking-label animate-pulse">
+            Téléversement…
+          </span>
         </div>
       )}
       <input

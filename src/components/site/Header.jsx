@@ -1,10 +1,12 @@
 import React, { useEffect, useState } from 'react';
+import { Link, useLocation, useNavigate } from 'react-router-dom';
 import { Menu, X } from 'lucide-react';
 import { useLang } from '@/lib/i18n';
-import EditField from './cms/EditField';
 
 export default function Header() {
   const { t, lang, setLang } = useLang();
+  const location = useLocation();
+  const navigate = useNavigate();
   const [scrolled, setScrolled] = useState(false);
   const [open, setOpen] = useState(false);
 
@@ -33,8 +35,26 @@ export default function Header() {
 
   const go = (href) => {
     setOpen(false);
-    const el = document.querySelector(href);
-    if (el) el.scrollIntoView({ behavior: 'smooth' });
+    if (location.pathname === '/') {
+      if (href === '#top') {
+        window.scrollTo({ top: 0, behavior: 'smooth' });
+        return;
+      }
+      const el = document.querySelector(href);
+      if (el) {
+        el.scrollIntoView({ behavior: 'smooth' });
+      }
+    } else {
+      navigate('/' + href);
+    }
+  };
+
+  const handleLogoClick = (e) => {
+    setOpen(false);
+    if (location.pathname === '/') {
+      e.preventDefault();
+      window.scrollTo({ top: 0, behavior: 'smooth' });
+    }
   };
 
   const LangSwitch = ({ className = '' }) => (
@@ -44,7 +64,9 @@ export default function Header() {
           {idx > 0 && <span className="text-navy/30">/</span>}
           <button
             onClick={() => setLang(l)}
-            className={`transition-colors uppercase ${lang === l ? 'text-electric' : 'text-navy/40 hover:text-navy'}`}
+            className={`transition-colors uppercase cursor-pointer ${
+              lang === l ? 'text-electric' : 'text-navy/40 hover:text-navy'
+            }`}
           >
             {l}
           </button>
@@ -62,21 +84,29 @@ export default function Header() {
       }`}
     >
       <div className="max-w-[1400px] mx-auto px-5 md:px-10 flex items-center justify-between gap-4">
-        <button onClick={() => go('#top')} className="text-left leading-none">
-          <span className="block font-heading font-bold tracking-tightest text-electric text-lg md:text-xl">
+        {/* Brand Logo - Always links to Home */}
+        <Link
+          to="/"
+          onClick={handleLogoClick}
+          className="text-left leading-none group cursor-pointer block"
+        >
+          <span className="block font-heading font-bold tracking-tightest text-electric text-lg md:text-xl group-hover:text-navy transition-colors">
             {t('brand')}
           </span>
           <span className="block text-[9px] md:text-[10px] tracking-label uppercase text-navy/55 mt-1">
             {t('descriptor')}
           </span>
-        </button>
+        </Link>
 
         {/* Desktop Navigation */}
         <nav className="hidden lg:flex items-center gap-8">
           <ul className="flex gap-7 text-[13px] font-medium uppercase tracking-label text-navy">
             {nav.map((n) => (
               <li key={n.href}>
-                <button onClick={() => go(n.href)} className="hover:text-solar transition-colors cursor-pointer">
+                <button
+                  onClick={() => go(n.href)}
+                  className="hover:text-solar transition-colors cursor-pointer"
+                >
                   {n.label}
                 </button>
               </li>
@@ -87,7 +117,7 @@ export default function Header() {
 
           <button
             onClick={() => go('#contact')}
-            className="bg-electric text-white px-5 py-3 text-[12px] font-bold uppercase tracking-label hover:bg-navy transition-all hover:-translate-y-0.5 cursor-pointer"
+            className="bg-electric text-white px-5 py-3 text-[12px] font-bold uppercase tracking-label hover:bg-navy transition-all hover:-translate-y-0.5 cursor-pointer shadow-sm"
           >
             {t('cta_quote')} →
           </button>
@@ -119,7 +149,7 @@ export default function Header() {
         </div>
       </div>
 
-      {/* Mobile Animated Dropdown Menu with smooth cubic-bezier slide */}
+      {/* Mobile Animated Dropdown Menu */}
       <div
         className={`lg:hidden overflow-hidden transition-all duration-400 ease-in-out ${
           open ? 'max-h-[380px] opacity-100 mt-3 border-t border-navy/10' : 'max-h-0 opacity-0 mt-0 border-t-0'

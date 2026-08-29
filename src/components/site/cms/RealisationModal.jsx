@@ -2,6 +2,7 @@ import React, { useState, useEffect, useRef } from 'react';
 import { uploadToCloudinary } from '@/lib/cloudinary';
 import { Image } from '@/components/ui/image';
 import Modal from './Modal';
+import { Upload, Check, Image as ImageIcon } from 'lucide-react';
 
 const SIZES = [
   { id: 'compact', label: 'Compact', col: 4, row: 30 },
@@ -41,30 +42,55 @@ export default function RealisationModal({ open, onClose, onSave }) {
     }
   };
 
-  const submit = () => {
-    if (!image || !cat) return;
-    const s = SIZES.find((x) => x.id === size);
-    onSave({ image, cat, desc, colSpan: s.col, rowSpan: s.row });
+  const submit = (e) => {
+    e?.preventDefault();
+    if (!image || !cat.trim()) return;
+    const s = SIZES.find((x) => x.id === size) || SIZES[1];
+    onSave({
+      image,
+      cat: cat.trim(),
+      desc: desc.trim(),
+      colSpan: s.col,
+      rowSpan: s.row,
+    });
     onClose();
   };
 
   return (
-    <Modal open={open} onClose={onClose} title="Ajouter une réalisation">
-      <div className="space-y-4">
-        <div className="aspect-[4/3] bg-skyblue relative overflow-hidden">
-          {image ? (
-            <Image src={image} alt="" fittingType="fill" className="w-full h-full" />
-          ) : (
-            <div className="w-full h-full flex items-center justify-center text-navy/40 text-sm">
-              Aucune image
-            </div>
-          )}
-          <button
-            onClick={() => inputRef.current?.click()}
-            className="absolute bottom-2 left-2 bg-electric text-white text-[10px] uppercase tracking-label px-3 py-1.5"
+    <Modal
+      open={open}
+      onClose={onClose}
+      title="Ajouter une réalisation"
+      maxWidth="max-w-2xl"
+    >
+      <form onSubmit={submit} className="grid grid-cols-1 md:grid-cols-12 gap-5 items-start">
+        {/* Left Column: Image Upload & Preview */}
+        <div className="md:col-span-6 space-y-3">
+          <label className="block text-[10px] uppercase tracking-label text-navy/60 font-bold">
+            Photo du projet <span className="text-red-500">*</span>
+          </label>
+          <div
+            onClick={() => !uploading && inputRef.current?.click()}
+            className="relative aspect-[4/3] w-full bg-skyblue/70 border-2 border-dashed border-navy/20 hover:border-electric transition-colors flex flex-col items-center justify-center cursor-pointer overflow-hidden rounded-sm group"
           >
-            {uploading ? '…' : 'Choisir image'}
-          </button>
+            {image ? (
+              <>
+                <Image src={image} alt="" fittingType="fill" className="w-full h-full object-cover" />
+                <div className="absolute inset-0 bg-navy/40 opacity-0 group-hover:opacity-100 transition-opacity flex items-center justify-center text-white text-xs font-bold uppercase tracking-label gap-1.5">
+                  <Upload size={14} /> Changer la photo
+                </div>
+              </>
+            ) : (
+              <div className="text-center p-4">
+                <ImageIcon size={32} className="mx-auto text-navy/30 mb-2 group-hover:text-electric transition-colors" />
+                <p className="text-xs text-navy/70 font-medium">
+                  {uploading ? 'Téléversement…' : 'Cliquez pour choisir une photo'}
+                </p>
+                <p className="text-[10px] text-navy/40 mt-1">PNG, JPG, WebP</p>
+              </div>
+            )}
+          </div>
+
           <input
             ref={inputRef}
             type="file"
@@ -72,64 +98,78 @@ export default function RealisationModal({ open, onClose, onSave }) {
             className="hidden"
             onChange={(e) => handleFile(e.target.files?.[0])}
           />
-        </div>
 
-        <div>
-          <label className="block text-[10px] uppercase tracking-label text-navy/55 mb-1">
-            Catégorie <span className="text-red-500">*</span>
-          </label>
-          <input
-            value={cat}
-            onChange={(e) => setCat(e.target.value)}
-            placeholder="Ex : Électricité, Solaire…"
-            className="w-full border-b border-navy/25 py-2 text-navy focus:border-electric focus:outline-none"
-          />
-        </div>
-
-        <div>
-          <label className="block text-[10px] uppercase tracking-label text-navy/55 mb-1">Description</label>
-          <textarea
-            value={desc}
-            onChange={(e) => setDesc(e.target.value)}
-            rows={2}
-            placeholder="Court descriptif du chantier"
-            className="w-full border-b border-navy/25 py-2 text-navy focus:border-electric focus:outline-none resize-none"
-          />
-        </div>
-
-        <div>
-          <label className="block text-[10px] uppercase tracking-label text-navy/55 mb-1">
-            Taille dans le collage
-          </label>
-          <div className="grid grid-cols-3 gap-2">
-            {SIZES.map((s) => (
-              <button
-                key={s.id}
-                type="button"
-                onClick={() => setSize(s.id)}
-                className={`py-2 text-[10px] uppercase tracking-label border transition-colors ${
-                  size === s.id
-                    ? 'bg-electric text-white border-electric'
-                    : 'border-navy/25 text-navy hover:border-electric'
-                }`}
-              >
-                {s.label}
-              </button>
-            ))}
+          {/* Size selector */}
+          <div>
+            <label className="block text-[10px] uppercase tracking-label text-navy/60 font-bold mb-1.5">
+              Format dans le collage
+            </label>
+            <div className="grid grid-cols-5 gap-1.5">
+              {SIZES.map((s) => (
+                <button
+                  key={s.id}
+                  type="button"
+                  onClick={() => setSize(s.id)}
+                  className={`py-1.5 px-1 text-[9px] uppercase tracking-label border font-medium transition-colors cursor-pointer text-center ${
+                    size === s.id
+                      ? 'bg-electric text-white border-electric font-bold'
+                      : 'border-navy/20 text-navy/70 hover:border-electric hover:text-navy bg-white/60'
+                  }`}
+                >
+                  {s.label}
+                </button>
+              ))}
+            </div>
           </div>
-          <p className="text-[10px] text-navy/45 mt-1">
-            Astuce : une fois ajoutée, vous pouvez la déplacer et ajuster sa largeur/hauteur en tirant ses bords.
-          </p>
         </div>
 
-        <button
-          onClick={submit}
-          disabled={!image || !cat}
-          className="w-full bg-electric text-white py-3 text-[12px] font-bold uppercase tracking-label disabled:opacity-40"
-        >
-          Ajouter au collage
-        </button>
-      </div>
+        {/* Right Column: Details & Actions */}
+        <div className="md:col-span-6 flex flex-col justify-between h-full space-y-4">
+          <div>
+            <label className="block text-[10px] uppercase tracking-label text-navy/60 font-bold mb-1">
+              Catégorie / Titre court <span className="text-red-500">*</span>
+            </label>
+            <input
+              type="text"
+              required
+              value={cat}
+              onChange={(e) => setCat(e.target.value)}
+              placeholder="Ex : Tableau Électrique, Éclairage LED…"
+              className="w-full border-b border-navy/25 py-2 text-navy text-sm focus:border-electric focus:outline-none bg-transparent"
+            />
+          </div>
+
+          <div>
+            <label className="block text-[10px] uppercase tracking-label text-navy/60 font-bold mb-1">
+              Description du projet
+            </label>
+            <textarea
+              value={desc}
+              onChange={(e) => setDesc(e.target.value)}
+              rows={3}
+              placeholder="Ex : Rénovation complète du coffret électrique avec mise aux normes RGIE..."
+              className="w-full border-b border-navy/25 py-2 text-navy text-sm focus:border-electric focus:outline-none resize-none leading-relaxed bg-transparent"
+            />
+          </div>
+
+          <div className="pt-2 space-y-2">
+            <button
+              type="submit"
+              disabled={!image || !cat.trim() || uploading}
+              className="w-full bg-electric text-white py-3 text-[12px] font-bold uppercase tracking-label hover:bg-navy transition-colors disabled:opacity-40 flex items-center justify-center gap-2 cursor-pointer shadow-sm"
+            >
+              <Check size={16} /> Ajouter au collage
+            </button>
+            <button
+              type="button"
+              onClick={onClose}
+              className="w-full border border-navy/20 text-navy py-2.5 text-[11px] font-bold uppercase tracking-label hover:border-navy transition-colors cursor-pointer"
+            >
+              Annuler
+            </button>
+          </div>
+        </div>
+      </form>
     </Modal>
   );
 }

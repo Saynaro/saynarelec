@@ -12,12 +12,12 @@ export default function About() {
     <section id="about" className="bg-skyblue py-20 md:py-28 border-t border-navy/10">
       <div className="max-w-[1400px] mx-auto px-5 md:px-10 grid grid-cols-12 gap-6 md:gap-10 items-center">
         <Reveal className="col-span-12 lg:col-span-5 order-2 lg:order-1">
-          <div className="relative aspect-[4/5] w-full overflow-hidden">
+          <div className="relative aspect-[4/5] w-full overflow-hidden bg-navy/5 shadow-xl">
             <EditableImage
               src={img('about_image') || ABOUT_IMG}
               alt="Ibragim Sainaro — Fondateur et électricien Saynarelec en Belgique"
               onChange={(url) => setImage('about_image', url)}
-              className="w-full h-full"
+              className="w-full h-full object-cover object-center"
             />
             <div className="absolute -top-px -left-px w-20 h-20 border-t-2 border-l-2 border-solar pointer-events-none" />
           </div>

@@ -84,22 +84,23 @@ export default function RealisationItem({
             isDesktop ? '' : 'w-full aspect-[16/10] sm:aspect-[16/9]'
           } ${!isAdmin ? 'cursor-pointer' : ''}`}
         >
-          <div className="relative w-full h-full overflow-hidden">
+          <div className="relative w-full h-full min-h-[360px] overflow-hidden bg-navy/10">
             <EditableImage
               src={item.image}
               alt={`${item.cat || 'Projet électricité'} — Réalisation Saynarelec en Belgique`}
               onChange={(url) => onMeta({ image: url })}
-              onClear={() => onMeta({ image: '' })}
-              className="w-full h-full transition-transform duration-700 ease-out group-hover:scale-[1.04]"
+              btnClassName="top-3 right-28"
+              className="w-full h-full object-cover object-center transition-transform duration-700 ease-out group-hover:scale-[1.03]"
             />
-            <div className="absolute inset-0 bg-gradient-to-t from-navy/80 via-navy/20 to-transparent opacity-85 group-hover:opacity-95 pointer-events-none" />
+            {/* Subtle bottom gradient to keep text readable while keeping entire image bright and clear */}
+            <div className="absolute inset-x-0 bottom-0 h-3/5 bg-gradient-to-t from-navy/90 via-navy/35 to-transparent pointer-events-none" />
 
             {/* Project labels / details */}
-            <div className="absolute bottom-0 inset-x-0 p-4 sm:p-5 md:p-7">
-              <span className="inline-block text-[10px] uppercase tracking-label text-solar font-bold mb-1.5 md:mb-2">
+            <div className="absolute bottom-0 inset-x-0 p-4 sm:p-5 md:p-6 z-10">
+              <span className="inline-block text-[10px] uppercase tracking-label text-solar font-bold mb-1 md:mb-1.5 drop-shadow-xs">
                 <EditableText as="span" value={item.cat} onChange={(v) => onUpdate({ cat: v })} />
               </span>
-              <div className="text-white font-heading text-base sm:text-lg md:text-2xl tracking-tight max-w-md leading-snug md:leading-tight">
+              <div className="text-white font-heading text-base sm:text-lg md:text-xl tracking-tight max-w-lg leading-snug drop-shadow-xs">
                 <EditableText as="span" multiline value={item.desc} onChange={(v) => onUpdate({ desc: v })} />
               </div>
             </div>
@@ -121,19 +122,41 @@ export default function RealisationItem({
               <>
                 <div
                   {...prov.dragHandleProps}
-                  className="absolute top-3 left-3 z-30 bg-white/80 text-navy p-1 cursor-grab active:cursor-grabbing"
-                  title="Déplacer"
+                  className="absolute top-3 left-3 z-30 bg-white/90 text-navy p-1.5 cursor-grab active:cursor-grabbing shadow-sm hover:bg-white transition-colors"
+                  title="Déplacer dans le collage"
                 >
-                  <GripVertical size={16} />
+                  <GripVertical size={15} />
                 </div>
-                <div className="absolute top-3 right-3 z-30 flex gap-1">
-                  <button onClick={() => onMove(-1)} className="bg-white/80 text-navy p-1 hover:bg-solar" title="Précédent">
+                <div className="absolute top-3 right-3 z-30 flex items-center gap-1">
+                  <button
+                    onClick={(e) => {
+                      e.stopPropagation();
+                      onOpenLightbox?.(index);
+                    }}
+                    className="bg-white/90 text-navy p-1.5 hover:bg-solar transition-colors cursor-pointer shadow-sm"
+                    title="Agrandir en plein écran"
+                  >
+                    <Maximize2 size={14} />
+                  </button>
+                  <button
+                    onClick={() => onMove(-1)}
+                    className="bg-white/90 text-navy p-1.5 hover:bg-solar transition-colors cursor-pointer shadow-sm"
+                    title="Déplacer vers la gauche"
+                  >
                     <ArrowLeft size={14} />
                   </button>
-                  <button onClick={() => onMove(1)} className="bg-white/80 text-navy p-1 hover:bg-solar" title="Suivant">
+                  <button
+                    onClick={() => onMove(1)}
+                    className="bg-white/90 text-navy p-1.5 hover:bg-solar transition-colors cursor-pointer shadow-sm"
+                    title="Déplacer vers la droite"
+                  >
                     <ArrowRight size={14} />
                   </button>
-                  <button onClick={() => setConfirmDeleteOpen(true)} className="bg-white text-navy hover:bg-red-500 hover:text-white p-1" title="Supprimer">
+                  <button
+                    onClick={() => setConfirmDeleteOpen(true)}
+                    className="bg-white/90 text-navy hover:bg-red-600 hover:text-white p-1.5 transition-colors cursor-pointer shadow-sm"
+                    title="Supprimer la réalisation"
+                  >
                     <Trash2 size={14} />
                   </button>
                 </div>

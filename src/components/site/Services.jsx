@@ -120,9 +120,8 @@ export default function Services() {
                         >
                           <ChevronDown
                             size={20}
-                            className={`transition-transform duration-300 ease-out ${
-                              isMobileExpanded ? 'rotate-180 text-electric' : 'rotate-0'
-                            }`}
+                            className={`transition-transform duration-300 ease-out ${isMobileExpanded ? 'rotate-180 text-electric' : 'rotate-0'
+                              }`}
                           />
                         </button>
 
@@ -142,15 +141,13 @@ export default function Services() {
 
                     {/* ── Mobile accordion panel (60fps GPU Grid Animation) ───── */}
                     <div
-                      className={`md:hidden accordion-grid ${
-                        isMobileExpanded ? 'is-expanded' : 'pointer-events-none'
-                      }`}
+                      className={`md:hidden accordion-grid ${isMobileExpanded ? 'is-expanded' : 'pointer-events-none'
+                        }`}
                     >
                       <div className="overflow-hidden">
                         <div
-                          className={`px-4 pb-6 space-y-4 transform transition-transform duration-300 ease-out ${
-                            isMobileExpanded ? 'translate-y-0' : '-translate-y-2'
-                          }`}
+                          className={`px-4 pb-6 space-y-4 transform transition-transform duration-300 ease-out ${isMobileExpanded ? 'translate-y-0' : '-translate-y-2'
+                            }`}
                         >
                           {/* Description */}
                           {s.desc && (
@@ -160,12 +157,12 @@ export default function Services() {
                           )}
                           {/* Image */}
                           {s.image && (
-                            <div className="relative aspect-[4/3] w-full min-h-[280px] max-h-[420px] overflow-hidden rounded-none bg-skyblue">
+                            <div className="relative aspect-[16/11] w-full min-h-[240px] max-h-[360px] overflow-hidden rounded-none bg-skyblue">
                               <Image
                                 src={s.image}
                                 alt={s.name}
                                 fittingType="fill"
-                                className="w-full h-full"
+                                className="w-full h-full object-cover"
                               />
                               {/* Overlay label */}
                               <div className="absolute inset-x-0 bottom-0 px-4 py-3 bg-gradient-to-t from-navy/70 via-navy/30 to-transparent pointer-events-none flex items-end justify-between">
@@ -218,14 +215,14 @@ export default function Services() {
 
           {/* ── Desktop image panel ─────────────────────────────────── */}
           <div className="hidden lg:block col-span-12 lg:col-span-5">
-            <div className="relative aspect-[4/5] w-full overflow-hidden bg-skyblue">
+            <div className="relative aspect-[4/4.4] max-h-[540px] w-full overflow-hidden bg-skyblue shadow-lg">
               <EditableImage
                 src={services[safeActive]?.image || ''}
                 alt={services[safeActive]?.name || ''}
                 onChange={(url) => updateServiceImage(safeActive, url)}
-                className="w-full h-full"
+                className="w-full h-full object-cover"
               />
-              <div className="absolute bottom-0 inset-x-0 p-5 flex items-end justify-between bg-gradient-to-t from-navy/60 to-transparent pointer-events-none">
+              <div className="absolute bottom-0 inset-x-0 p-5 flex items-end justify-between bg-gradient-to-t from-navy/70 via-navy/30 to-transparent pointer-events-none">
                 <span className="text-white font-heading text-lg tracking-tight">{services[safeActive]?.name}</span>
                 <span className="text-solar font-heading font-bold text-2xl tabular-nums">
                   {String(safeActive + 1).padStart(2, '0')}
