@@ -10,8 +10,9 @@
   [![Supabase](https://img.shields.io/badge/Supabase-Database-3ECF8E?logo=supabase&logoColor=white&style=flat-square)](https://supabase.com/)
   [![Cloudinary](https://img.shields.io/badge/Cloudinary-Media-3448C5?logo=cloudinary&logoColor=white&style=flat-square)](https://cloudinary.com/)
   [![EmailJS](https://img.shields.io/badge/EmailJS-Form_Delivery-EA580C?logo=mail.ru&logoColor=white&style=flat-square)](https://www.emailjs.com/)
+  [![License: MIT](https://img.shields.io/badge/License-MIT-yellow.svg?style=flat-square)](LICENSE)
 
-  [Demo / Site Web](https://saynarelec.com) • [Fonctionnalités](#-fonctionnalités) • [Technologies](#-technologies) • [Installation](#-installation-rapide) • [Déploiement](#-déploiement)
+  [Demo / Site Web](https://saynarelec.com) • [Fonctionnalités](#-fonctionnalités) • [Technologies](#-technologies) • [Installation](#-installation-rapide) • [Déploiement](#-déploiement) • [Licence](#-licence)
 
 </div>
 
@@ -168,4 +169,4 @@ Pour déployer sur une plateforme comme **Vercel**, **Netlify** ou un serveur VP
 
 ## 📄 Licence
 
-Ce projet est sous licence privée © **Saynarelec**. Tous droits réservés.
+Distribué sous la licence **MIT**. Voir le fichier [`LICENSE`](LICENSE) pour plus d'informations.
