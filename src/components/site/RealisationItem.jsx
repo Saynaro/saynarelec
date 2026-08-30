@@ -61,9 +61,9 @@ export default function RealisationItem({
 
   const desktopStyle = isDesktop
     ? {
-        gridColumn: `span ${item.colSpan || 6}`,
-        gridRow: `span ${item.rowSpan || 36}`,
-      }
+      gridColumn: `span ${item.colSpan || 6}`,
+      gridRow: `span ${item.rowSpan || 36}`,
+    }
     : {};
 
   return (
@@ -80,16 +80,15 @@ export default function RealisationItem({
             ...desktopStyle,
           }}
           onClick={!isAdmin && onOpenLightbox ? () => onOpenLightbox(index) : undefined}
-          className={`real-fade group relative overflow-hidden ${
-            isDesktop ? '' : 'w-full aspect-[16/10] sm:aspect-[16/9]'
-          } ${!isAdmin ? 'cursor-pointer' : ''}`}
+          className={`real-fade group relative overflow-hidden ${isDesktop ? '' : 'w-full aspect-[16/10] sm:aspect-[16/9]'
+            } ${!isAdmin ? 'cursor-pointer' : ''}`}
         >
           <div className="relative w-full h-full min-h-[360px] overflow-hidden bg-navy/10">
             <EditableImage
               src={item.image}
               alt={`${item.cat || 'Projet électricité'} — Réalisation Saynarelec en Belgique`}
               onChange={(url) => onMeta({ image: url })}
-              btnClassName="top-3 right-28"
+              btnClassName="top-3 right-38 sm:right-40"
               className="w-full h-full object-cover object-center transition-transform duration-700 ease-out group-hover:scale-[1.03]"
             />
             {/* Subtle bottom gradient to keep text readable while keeping entire image bright and clear */}
