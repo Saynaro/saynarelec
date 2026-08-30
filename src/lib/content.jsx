@@ -2,6 +2,7 @@ import React, { createContext, useContext, useState, useEffect, useCallback } fr
 import { supabase } from '@/api/base44Client';
 import { useLang } from '@/lib/i18n';
 import { DEFAULT_CONTENT } from '@/lib/content-defaults';
+import { SERVICES_SEO_DATA } from '@/lib/services-data';
 
 const ContentContext = createContext(null);
 const ADMIN_EMAILS = ['contact@saynarelec.com', 'saynarelec@gmail.com'];
@@ -490,62 +491,104 @@ export function ContentProvider({ children }) {
         }
       }
     }
-    const base = target || DEFAULT_CONTENT.service_pages[slug] || {};
+    const def = SERVICES_SEO_DATA[targetKey] || SERVICES_SEO_DATA[slug] || {};
+    const base = target || def;
 
-    const resolveField = (val) => {
-      if (!val) return '';
-      if (typeof val === 'string') return val;
-      if (isObj(val)) return val[lang] || val.fr || val.nl || val.en || '';
-      return val;
+    const resolveField = (val, defaultVal) => {
+      if (isObj(val)) {
+        return val[lang] || val.fr || (isObj(defaultVal) ? (defaultVal[lang] || defaultVal.fr) : '') || '';
+      }
+      if (typeof val === 'string' && val.trim() !== '') {
+        if (isObj(defaultVal)) {
+          if (val === defaultVal.fr || val === defaultVal.nl || val === defaultVal.en) {
+            return defaultVal[lang] || defaultVal.fr || val;
+          }
+          if (lang === 'fr') return val;
+          return defaultVal[lang] || val;
+        }
+        return val;
+      }
+      if (isObj(defaultVal)) {
+        return defaultVal[lang] || defaultVal.fr || '';
+      }
+      return typeof defaultVal === 'string' ? defaultVal : '';
     };
 
     // Get matching image from "Nos métiers" if available
     const idx = SLUG_TO_INDEX[slug] !== undefined ? SLUG_TO_INDEX[slug] : SLUG_TO_INDEX[targetKey];
     const srvList = arr('services', content);
-    const serviceImg = idx !== undefined && srvList[idx]?.image ? srvList[idx].image : base.image;
+    const serviceImg = idx !== undefined && srvList[idx]?.image ? srvList[idx].image : (base.image || def.image);
 
     // Resolve highlights for current language
     let resolvedHighlights = [];
+    const defHighlights = isObj(def.highlights) ? (def.highlights[lang] || def.highlights.fr || []) : [];
+    
     if (isObj(base.highlights) && !Array.isArray(base.highlights)) {
-      resolvedHighlights = (base.highlights[lang] || base.highlights.fr || base.highlights.nl || base.highlights.en || []).map(resolveField);
+      resolvedHighlights = (base.highlights[lang] || base.highlights.fr || defHighlights).map((item, i) => resolveField(item, defHighlights[i]));
     } else if (Array.isArray(base.highlights)) {
-      resolvedHighlights = base.highlights.map(resolveField);
+      if (lang !== 'fr' && defHighlights.length && base.highlights.length === def.highlights?.fr?.length) {
+        resolvedHighlights = defHighlights;
+      } else {
+        resolvedHighlights = base.highlights.map((item, i) => resolveField(item, defHighlights[i]));
+      }
+    } else {
+      resolvedHighlights = defHighlights;
     }
 
     // Resolve detailed sections for current language
     let resolvedSections = [];
+    const defSections = isObj(def.sections) ? (def.sections[lang] || def.sections.fr || []) : [];
+    
     if (isObj(base.sections) && !Array.isArray(base.sections)) {
-      const rawSecs = base.sections[lang] || base.sections.fr || base.sections.nl || base.sections.en || [];
-      resolvedSections = rawSecs.map((sec) => ({
-        title: resolveField(sec.title),
-        text: resolveField(sec.text),
+      const rawSecs = base.sections[lang] || base.sections.fr || defSections;
+      resolvedSections = rawSecs.map((sec, i) => ({
+        title: resolveField(sec.title, defSections[i]?.title),
+        text: resolveField(sec.text, defSections[i]?.text),
       }));
     } else if (Array.isArray(base.sections)) {
-      resolvedSections = base.sections.map((sec) => ({
-        title: resolveField(sec.title),
-        text: resolveField(sec.text),
-      }));
+      if (lang !== 'fr' && defSections.length && base.sections.length === def.sections?.fr?.length) {
+        resolvedSections = defSections;
+      } else {
+        resolvedSections = base.sections.map((sec, i) => ({
+          title: resolveField(sec.title, defSections[i]?.title),
+          text: resolveField(sec.text, defSections[i]?.text),
+        }));
+      }
+    } else {
+      resolvedSections = defSections;
     }
 
     // Resolve FAQs for current language
-    const resolvedFaqs = (base.faqs || []).map((faq) => ({
-      q: resolveField(faq.q),
-      a: resolveField(faq.a),
-    }));
+    let resolvedFaqs = [];
+    const defFaqs = def.faqs || [];
+    if (Array.isArray(base.faqs) && base.faqs.length) {
+      resolvedFaqs = base.faqs.map((faq, i) => {
+        const dFaq = defFaqs[i];
+        return {
+          q: resolveField(faq.q, dFaq?.q),
+          a: resolveField(faq.a, dFaq?.a),
+        };
+      });
+    } else {
+      resolvedFaqs = defFaqs.map((faq) => ({
+        q: resolveField(faq.q),
+        a: resolveField(faq.a),
+      }));
+    }
 
     return {
       slug: base.slug || targetKey,
-      aliases: base.aliases || [],
-      title: resolveField(base.title),
-      metaDescription: resolveField(base.metaDescription),
-      h1: resolveField(base.h1),
-      badge: resolveField(base.badge),
-      lead: resolveField(base.lead),
-      alt: resolveField(base.alt),
+      aliases: base.aliases || def.aliases || [],
+      title: resolveField(base.title, def.title),
+      metaDescription: resolveField(base.metaDescription, def.metaDescription),
+      h1: resolveField(base.h1, def.h1),
+      badge: resolveField(base.badge, def.badge),
+      lead: resolveField(base.lead, def.lead),
+      alt: resolveField(base.alt, def.alt),
       highlights: resolvedHighlights,
       sections: resolvedSections,
       faqs: resolvedFaqs,
-      image: serviceImg || base.image,
+      image: serviceImg || base.image || def.image,
     };
   };
 

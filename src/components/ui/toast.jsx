@@ -10,7 +10,7 @@ const ToastViewport = React.forwardRef(({ className, ...props }, ref) => (
   <ToastPrimitives.Viewport
     ref={ref}
     className={cn(
-      "fixed bottom-0 right-0 z-[100] flex max-h-screen w-full flex-col p-4 sm:p-6 md:max-w-[380px] gap-2 pointer-events-none",
+      "fixed top-4 sm:top-6 inset-x-0 mx-auto z-[999999] flex max-h-screen w-full flex-col-reverse p-4 sm:p-0 max-w-[92vw] sm:max-w-[420px] gap-2 pointer-events-none items-center",
       className
     )}
     {...props}
@@ -19,13 +19,13 @@ const ToastViewport = React.forwardRef(({ className, ...props }, ref) => (
 ToastViewport.displayName = ToastPrimitives.Viewport.displayName;
 
 const toastVariants = cva(
-  "group pointer-events-auto relative flex w-full items-start justify-between space-x-3 overflow-hidden rounded-xl border p-4 shadow-md transition-all duration-300 data-[swipe=cancel]:translate-x-0 data-[swipe=end]:translate-x-[var(--radix-toast-swipe-end-x)] data-[swipe=move]:translate-x-[var(--radix-toast-swipe-move-x)] data-[swipe=move]:transition-none data-[state=open]:animate-in data-[state=closed]:animate-out data-[swipe=end]:animate-out data-[state=closed]:fade-out-80 data-[state=closed]:slide-out-to-right-full data-[state=open]:slide-in-from-bottom-full",
+  "group pointer-events-auto relative flex w-full items-start justify-between space-x-3 overflow-hidden rounded-xl border p-4 shadow-xl transition-all duration-300 data-[swipe=cancel]:translate-y-0 data-[swipe=end]:translate-y-[var(--radix-toast-swipe-end-y)] data-[swipe=move]:translate-y-[var(--radix-toast-swipe-move-y)] data-[swipe=move]:transition-none data-[state=open]:animate-in data-[state=closed]:animate-out data-[swipe=end]:animate-out data-[state=closed]:fade-out-80 data-[state=closed]:slide-out-to-top-full data-[state=open]:slide-in-from-top-full",
   {
     variants: {
       variant: {
-        default: "border-navy/10 bg-white text-navy",
-        success: "border-navy/10 bg-white text-navy",
-        destructive: "border-red-200 bg-white text-red-900",
+        default: "border-navy/10 bg-white text-navy shadow-navy/10",
+        success: "border-emerald-200 bg-white text-navy shadow-emerald-500/10",
+        destructive: "border-red-200 bg-white text-red-900 shadow-red-500/10",
       },
     },
     defaultVariants: {

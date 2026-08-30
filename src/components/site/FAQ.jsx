@@ -57,6 +57,13 @@ export default function FAQ({ customFaqs = null, onUpdateCustomFaqs = null, clas
     setDeleteIdx(null);
   };
 
+  const resolveFaqText = (val) => {
+    if (!val) return '';
+    if (typeof val === 'string') return val;
+    if (typeof val === 'object') return val[lang] || val.fr || val.nl || val.en || '';
+    return String(val);
+  };
+
   return (
     <section id="faq" className={`py-20 md:py-28 bg-warm border-t border-navy/10 ${className}`}>
       <div className="max-w-[1200px] mx-auto px-5 md:px-10">
@@ -97,7 +104,7 @@ export default function FAQ({ customFaqs = null, onUpdateCustomFaqs = null, clas
                       aria-expanded={isOpen}
                     >
                       <span className="font-heading font-medium text-navy text-lg sm:text-xl pr-2">
-                        {item.q}
+                        {resolveFaqText(item.q)}
                       </span>
                       <span
                         className={`w-8 h-8 rounded-full flex items-center justify-center shrink-0 transition-transform duration-200 ${
@@ -141,7 +148,7 @@ export default function FAQ({ customFaqs = null, onUpdateCustomFaqs = null, clas
                     }`}
                   >
                     <div className="pt-2 border-t border-navy/10 text-navy/75 text-sm sm:text-base leading-relaxed">
-                      {item.a}
+                      {resolveFaqText(item.a)}
                     </div>
                   </div>
                 </div>
@@ -156,7 +163,7 @@ export default function FAQ({ customFaqs = null, onUpdateCustomFaqs = null, clas
                 onClick={() => setAddOpen(true)}
                 className="inline-flex items-center gap-2 border border-dashed border-navy/30 hover:border-electric text-navy/70 hover:text-electric px-6 py-3 text-xs font-bold uppercase tracking-label transition-all cursor-pointer bg-white/50"
               >
-                <Plus size={16} /> Ajouter une question fréquente
+                <Plus size={16} /> {lang === 'nl' ? 'Vraag toevoegen' : lang === 'en' ? 'Add FAQ item' : 'Ajouter une question fréquente'}
               </button>
             </div>
           )}

@@ -5,10 +5,60 @@ import { useContent } from '@/lib/content';
 import EditField from './cms/EditField';
 import AdminLogin from './cms/AdminLogin';
 
+const FOOTER_TEXTS = {
+  fr: {
+    bio: "Entreprise d'électricité générale et solaire en Belgique. Installations fiables, rénovations et mises en conformité RGIE pour particuliers et professionnels.",
+    quote: "Devis en ligne",
+    services_heading: "Nos Prestations",
+    area: "Intervention partout en Belgique : Bruxelles, Liège, Namur, Charleroi, Flandre.",
+    tagline: "Électricité · Solaire · Belgique",
+    services: [
+      { label: 'Électricité générale', href: '/services/electricite-generale' },
+      { label: 'Rénovation électrique', href: '/services/renovation-electrique' },
+      { label: 'Mise en conformité RGIE', href: '/services/mise-en-conformite' },
+      { label: 'Dépannage d\'urgence', href: '/services/depannage-electrique' },
+      { label: 'Éclairage LED & design', href: '/services/eclairage' },
+      { label: 'Panneaux photovoltaïques', href: '/services/panneaux-solaires' },
+    ],
+  },
+  nl: {
+    bio: "Specialist in algemene elektriciteit en zonne-energie in België. Betrouwbare installaties, renovaties en AREI-conformiteit voor particulieren en bedrijven.",
+    quote: "Online offerte",
+    services_heading: "Onze Diensten",
+    area: "Werkzaam in heel België: Brussel, Luik, Namen, Charleroi, Vlaanderen.",
+    tagline: "Elektriciteit · Zonne-energie · België",
+    services: [
+      { label: 'Algemene elektriciteit', href: '/services/electricite-generale' },
+      { label: 'Elektrische renovatie', href: '/services/renovation-electrique' },
+      { label: 'AREI-conformiteit', href: '/services/mise-en-conformite' },
+      { label: 'Snelle depannage', href: '/services/depannage-electrique' },
+      { label: 'Led- & designverlichting', href: '/services/eclairage' },
+      { label: 'Zonnepanelen', href: '/services/panneaux-solaires' },
+    ],
+  },
+  en: {
+    bio: "General electricity and solar energy company in Belgium. Reliable installations, rewiring renovations, and RGIE compliance for homes and businesses.",
+    quote: "Online quote",
+    services_heading: "Our Services",
+    area: "Active across Belgium: Brussels, Liège, Namur, Charleroi, Flanders.",
+    tagline: "Electricity · Solar · Belgium",
+    services: [
+      { label: 'General electricity', href: '/services/electricite-generale' },
+      { label: 'Electrical renovation', href: '/services/renovation-electrique' },
+      { label: 'RGIE compliance', href: '/services/mise-en-conformite' },
+      { label: 'Emergency repairs', href: '/services/depannage-electrique' },
+      { label: 'LED & lighting design', href: '/services/eclairage' },
+      { label: 'Solar panels', href: '/services/panneaux-solaires' },
+    ],
+  },
+};
+
 export default function Footer() {
   const { t, lang, setLang } = useLang();
   const { isAdmin, logout } = useContent();
   const [loginOpen, setLoginOpen] = useState(false);
+
+  const fTexts = FOOTER_TEXTS[lang] || FOOTER_TEXTS.fr;
 
   useEffect(() => {
     const metaTheme = document.querySelector('meta[name="theme-color"]');
@@ -45,15 +95,6 @@ export default function Footer() {
     { label: t('nav_contact'), href: '#contact' },
   ];
 
-  const serviceLinks = [
-    { label: 'Électricité générale', href: '/services/electricite-generale' },
-    { label: 'Rénovation électrique', href: '/services/renovation-electrique' },
-    { label: 'Mise en conformité RGIE', href: '/services/mise-en-conformite' },
-    { label: 'Dépannage d\'urgence', href: '/services/depannage-electrique' },
-    { label: 'Éclairage LED & design', href: '/services/eclairage' },
-    { label: 'Panneaux photovoltaïques', href: '/services/panneaux-solaires' },
-  ];
-
   const handleAdmin = () => {
     if (isAdmin) logout();
     else setLoginOpen(true);
@@ -71,7 +112,7 @@ export default function Footer() {
             <EditField k="footer_descriptor" as="span" />
           </div>
           <p className="text-white/70 text-xs sm:text-sm mt-4 leading-relaxed max-w-sm">
-            Entreprise d'électricité générale et solaire en Belgique. Installations fiables, rénovations et mises en conformité RGIE pour particuliers et professionnels.
+            {fTexts.bio}
           </p>
           <div className="mt-6 flex items-center gap-2 text-xs font-bold">
             {['fr', 'nl', 'en'].map((l, idx) => (
@@ -103,7 +144,7 @@ export default function Footer() {
             ))}
             <li>
               <Link to="/contact" className="text-white/80 hover:text-solar transition-colors text-xs sm:text-sm">
-                Devis en ligne
+                {fTexts.quote}
               </Link>
             </li>
           </ul>
@@ -112,10 +153,10 @@ export default function Footer() {
         {/* Col 3: Services (SEO internal linking) */}
         <div className="col-span-6 md:col-span-3 lg:col-span-3">
           <div className="text-[10px] uppercase tracking-label text-white/40 mb-4 font-bold">
-            Nos Prestations
+            {fTexts.services_heading}
           </div>
           <ul className="space-y-2 text-xs sm:text-sm">
-            {serviceLinks.map((s) => (
+            {fTexts.services.map((s) => (
               <li key={s.href}>
                 <Link to={s.href} className="text-white/80 hover:text-solar transition-colors">
                   {s.label}
@@ -137,7 +178,7 @@ export default function Footer() {
             {t('contact_email')}
           </a>
           <p className="text-white/60 text-xs mt-2">
-            Intervention partout en Belgique : Bruxelles, Liège, Namur, Charleroi, Flandre.
+            {fTexts.area}
           </p>
           <div className="mt-6 flex flex-col gap-2 text-xs sm:text-sm">
             <Link to="/mentions-legales" className="text-white/70 hover:text-solar transition-colors">
@@ -161,7 +202,7 @@ export default function Footer() {
               title="Espace administrateur"
             />
           </span>
-          <span className="tracking-label uppercase text-[10px]">Électricité · Solaire · Belgique</span>
+          <span className="tracking-label uppercase text-[10px]">{fTexts.tagline}</span>
         </div>
       </div>
 
