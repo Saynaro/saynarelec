@@ -1,12 +1,13 @@
 import React, { useState } from 'react';
 import { useContent } from '@/lib/content';
 import Modal from './Modal';
-import { Mail, Lock, Loader2 } from 'lucide-react';
+import { Mail, Lock, Eye, EyeOff } from 'lucide-react';
 
 export default function AdminLogin({ open, onClose }) {
   const { login } = useContent();
   const [email, setEmail] = useState('');
   const [password, setPassword] = useState('');
+  const [showPassword, setShowPassword] = useState(false);
   const [error, setError] = useState('');
 
   const submit = (e) => {
@@ -16,7 +17,9 @@ export default function AdminLogin({ open, onClose }) {
     if (result.success) {
       setEmail('');
       setPassword('');
+      setShowPassword(false);
       onClose();
+      window.scrollTo({ top: 0, behavior: 'smooth' });
     } else if (result.field === 'email') {
       setError('Adresse e-mail incorrecte.');
     } else {
@@ -42,7 +45,7 @@ export default function AdminLogin({ open, onClose }) {
               value={email}
               onChange={(e) => setEmail(e.target.value)}
               required
-              className="w-full border-b border-navy/25 py-2 pl-9 text-navy focus:border-electric focus:outline-none"
+              className="w-full border-b border-navy/25 py-2 pl-9 pr-3 text-navy focus:border-electric focus:outline-none text-sm"
               placeholder="contact@saynarelec.com"
             />
           </div>
@@ -52,18 +55,27 @@ export default function AdminLogin({ open, onClose }) {
           <div className="relative">
             <Lock size={16} className="absolute left-3 top-1/2 -translate-y-1/2 text-navy/40" />
             <input
-              type="password"
+              type={showPassword ? 'text' : 'password'}
               value={password}
               onChange={(e) => setPassword(e.target.value)}
               required
-              className="w-full border-b border-navy/25 py-2 pl-9 text-navy focus:border-electric focus:outline-none"
+              className="w-full border-b border-navy/25 py-2 pl-9 pr-9 text-navy focus:border-electric focus:outline-none text-sm"
               placeholder="••••••••"
             />
+            <button
+              type="button"
+              onClick={() => setShowPassword(!showPassword)}
+              className="absolute right-2 top-1/2 -translate-y-1/2 p-1 text-navy/40 hover:text-navy transition-colors cursor-pointer"
+              title={showPassword ? "Masquer le mot de passe" : "Afficher le mot de passe"}
+              aria-label={showPassword ? "Masquer le mot de passe" : "Afficher le mot de passe"}
+            >
+              {showPassword ? <EyeOff size={16} /> : <Eye size={16} />}
+            </button>
           </div>
         </div>
         <button
           type="submit"
-          className="w-full bg-electric text-white py-3 text-[12px] font-bold uppercase tracking-label hover:bg-navy transition-colors"
+          className="w-full bg-electric text-white py-3 text-[12px] font-bold uppercase tracking-label hover:bg-navy transition-colors cursor-pointer mt-2"
         >
           Se connecter
         </button>

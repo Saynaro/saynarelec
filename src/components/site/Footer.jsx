@@ -101,7 +101,7 @@ export default function Footer() {
   };
 
   return (
-    <footer className="bg-electric text-white">
+    <footer id="footer" className="bg-electric text-white">
       <div className="max-w-[1400px] mx-auto px-5 md:px-10 py-16 md:py-20 grid grid-cols-12 gap-8 md:gap-10">
         {/* Col 1: Brand & Bio */}
         <div className="col-span-12 md:col-span-4 lg:col-span-4">

@@ -3,7 +3,6 @@ import { useLocation, useNavigationType } from "react-router-dom";
 
 const getHashId = (hash) => {
   const rawId = hash.slice(1);
-
   try {
     return decodeURIComponent(rawId);
   } catch {
@@ -16,15 +15,29 @@ export default function ScrollToTop() {
   const navigationType = useNavigationType();
 
   useEffect(() => {
-    if (navigationType === "POP") return;
-
     if (hash) {
       const id = getHashId(hash);
-      const timer = window.setTimeout(() => {
-        document.getElementById(id)?.scrollIntoView({ behavior: "smooth" });
-      }, 50);
-      return () => window.clearTimeout(timer);
+      const scrollToElement = () => {
+        const el = document.getElementById(id);
+        if (el) {
+          el.scrollIntoView({ behavior: "smooth" });
+          return true;
+        }
+        return false;
+      };
+
+      if (!scrollToElement()) {
+        const timer1 = window.setTimeout(scrollToElement, 60);
+        const timer2 = window.setTimeout(scrollToElement, 200);
+        return () => {
+          window.clearTimeout(timer1);
+          window.clearTimeout(timer2);
+        };
+      }
+      return;
     }
+
+    if (navigationType === "POP") return;
 
     window.scrollTo({ top: 0, left: 0, behavior: "instant" });
   }, [pathname, hash, navigationType]);

@@ -334,8 +334,8 @@ function LegalContent({ kind }) {
       <div className="max-w-3xl mx-auto px-5 md:px-10 py-20 md:py-28">
         {/* Back link */}
         <Link
-          to="/"
-          className="inline-flex items-center gap-2 text-sm text-navy/60 hover:text-electric transition-colors mb-10 font-medium"
+          to="/#footer"
+          className="inline-flex items-center gap-2 text-sm text-navy/60 hover:text-electric transition-colors mb-10 font-medium cursor-pointer"
         >
           <ArrowLeft size={16} /> {data.back}
         </Link>
