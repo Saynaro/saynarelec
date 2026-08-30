@@ -39,7 +39,7 @@ function HomeContent() {
         "name": "Saynarelec",
         "alternateName": "SAYNARELEC",
         "url": "https://saynarelec.com/",
-        "logo": "https://saynarelec.com/favicon.svg",
+        "logo": "https://saynarelec.com/android-chrome-512x512.png",
         "image": "https://res.cloudinary.com/q6lr90ky/image/upload/v1787783960/byntvhslvv75kzdgjr7c.jpg",
         "email": "contact@saynarelec.com",
         "priceRange": "€€",
