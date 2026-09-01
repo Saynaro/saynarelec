@@ -329,6 +329,7 @@ function LegalContent({ kind }) {
         description={doc.description}
         canonical={canonical}
         lang={lang}
+        noindex={true}
       />
 
       <div className="max-w-3xl mx-auto px-5 md:px-10 py-20 md:py-28">

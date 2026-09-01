@@ -68,20 +68,4 @@
     <changefreq>monthly</changefreq>
     <priority>0.8</priority>
   </url>
-
-  <!-- Mentions Légales -->
-  <url>
-    <loc>https://saynarelec.com/mentions-legales</loc>
-    <lastmod>2026-08-29</lastmod>
-    <changefreq>yearly</changefreq>
-    <priority>0.3</priority>
-  </url>
-
-  <!-- Politique de Confidentialité -->
-  <url>
-    <loc>https://saynarelec.com/politique-confidentialite</loc>
-    <lastmod>2026-08-29</lastmod>
-    <changefreq>yearly</changefreq>
-    <priority>0.3</priority>
-  </url>
 </urlset>
