@@ -30,6 +30,7 @@ export default function Header() {
     { label: t('nav_services'), href: '#services' },
     { label: t('nav_realisations'), href: '#realisations' },
     { label: t('nav_about'), href: '#about' },
+    { label: t('nav_reviews'), href: '#reviews' },
     { label: t('nav_contact'), href: '#contact' },
   ];
 
@@ -152,7 +153,7 @@ export default function Header() {
       {/* Mobile Animated Dropdown Menu */}
       <div
         className={`lg:hidden overflow-hidden transition-all duration-400 ease-in-out ${
-          open ? 'max-h-[380px] opacity-100 mt-3 border-t border-navy/10' : 'max-h-0 opacity-0 mt-0 border-t-0'
+          open ? 'max-h-[440px] opacity-100 mt-3 border-t border-navy/10' : 'max-h-0 opacity-0 mt-0 border-t-0'
         }`}
         style={{
           transitionTimingFunction: 'cubic-bezier(0.4, 0, 0.2, 1)',

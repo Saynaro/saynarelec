@@ -31,7 +31,7 @@ export default function Process() {
             <span className="w-8 h-px bg-solar" />
             <EditField k="process_label" as="span" className="text-solar font-bold tracking-label text-[11px] uppercase" />
           </div>
-          <h2 className="font-heading font-semibold tracking-tightest text-navy text-4xl md:text-6xl leading-[0.95] max-w-2xl">
+          <h2 className="font-heading font-semibold tracking-tightest text-navy text-4xl sm:text-4xl md:text-4xl lg:text-6xl leading-tight max-w-3xl">
             <EditField k="process_title" as="span" />
           </h2>
         </Reveal>

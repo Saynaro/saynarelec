@@ -62,6 +62,15 @@ const normalizeContent = (saved) => {
     }
   }
 
+  // Migrate old process_title to new concise title
+  if (out.process_title) {
+    if (typeof out.process_title === 'string' && out.process_title.toLowerCase().includes('demande')) {
+      out.process_title = { fr: 'Notre processus en 5 étapes.', nl: 'Ons stappenplan in 5 fasen.', en: 'Our process in 5 steps.' };
+    } else if (isObj(out.process_title) && out.process_title.fr && out.process_title.fr.toLowerCase().includes('demande')) {
+      out.process_title.fr = 'Notre processus en 5 étapes.';
+    }
+  }
+
   // Sync universal keys (stats/numbers/email) across languages if any language was customized
   UNIVERSAL_KEYS.forEach((k) => {
     if (isObj(out[k])) {
@@ -93,6 +102,19 @@ const normalizeContent = (saved) => {
       ...s,
       title: fillMissingLangs(s.title),
       desc: fillMissingLangs(s.desc),
+    }));
+  }
+  if (Array.isArray(out.reviews)) {
+    out.reviews = out.reviews.map((r) => ({
+      ...r,
+      name: typeof r.name === 'string' ? r.name : (r.name?.fr || ''),
+      category: r.category || 'generale',
+      rating: Number(r.rating) || 5,
+      verified: r.verified !== false,
+      location: fillMissingLangs(r.location),
+      project: fillMissingLangs(r.project),
+      text: fillMissingLangs(r.text),
+      date: fillMissingLangs(r.date),
     }));
   }
   return out;
@@ -464,6 +486,57 @@ export function ContentProvider({ children }) {
     save({ faqs: raw.filter((_, idx) => idx !== i) });
   };
 
+  // Reviews CRUD
+  const rawReviews = content.reviews ?? DEFAULT_CONTENT.reviews;
+  const reviews = (rawReviews || []).map((item) => ({
+    ...item,
+    location: isObj(item.location) ? item.location[lang] || item.location.fr || '' : item.location,
+    project: isObj(item.project) ? item.project[lang] || item.project.fr || '' : item.project,
+    text: isObj(item.text) ? item.text[lang] || item.text.fr || '' : item.text,
+    date: isObj(item.date) ? item.date[lang] || item.date.fr || '' : item.date,
+  }));
+
+  const updateReview = (i, data) => {
+    const raw = content.reviews ?? DEFAULT_CONTENT.reviews;
+    const next = raw.map((item, idx) => {
+      if (idx !== i) return item;
+      return {
+        ...item,
+        name: data.name !== undefined ? data.name : item.name,
+        rating: data.rating !== undefined ? Number(data.rating) : item.rating,
+        category: data.category !== undefined ? data.category : item.category,
+        location: isObj(item.location) ? { ...item.location, [lang]: data.location } : { fr: data.location, nl: data.location, en: data.location },
+        project: isObj(item.project) ? { ...item.project, [lang]: data.project } : { fr: data.project, nl: data.project, en: data.project },
+        text: isObj(item.text) ? { ...item.text, [lang]: data.text } : { fr: data.text, nl: data.text, en: data.text },
+        date: isObj(item.date) ? { ...item.date, [lang]: data.date } : { fr: data.date, nl: data.date, en: data.date },
+      };
+    });
+    save({ reviews: next });
+  };
+
+  const addReview = (data) => {
+    const raw = content.reviews ?? DEFAULT_CONTENT.reviews;
+    const next = [
+      ...raw,
+      {
+        name: data.name || 'Client Saynarelec',
+        rating: Number(data.rating) || 5,
+        category: data.category || 'generale',
+        verified: true,
+        location: { fr: data.location || 'Belgique', nl: data.location || 'België', en: data.location || 'Belgium' },
+        project: { fr: data.project || 'Électricité générale', nl: data.project || 'Algemene elektriciteit', en: data.project || 'General electricity' },
+        text: { fr: data.text || '', nl: data.text || '', en: data.text || '' },
+        date: { fr: data.date || 'Récemment', nl: data.date || 'Recent', en: data.date || 'Recently' },
+      },
+    ];
+    save({ reviews: next });
+  };
+
+  const deleteReview = (i) => {
+    const raw = content.reviews ?? DEFAULT_CONTENT.reviews;
+    save({ reviews: raw.filter((_, idx) => idx !== i) });
+  };
+
   // Mapping between service slugs and indexes in "Nos métiers"
   const SLUG_TO_INDEX = {
     'electricite-generale': 0,
@@ -638,6 +711,10 @@ export function ContentProvider({ children }) {
       updated.faqs = partial.faqs;
     }
 
+    if (partial.reviews !== undefined) {
+      updated.reviews = partial.reviews;
+    }
+
     if (partial.image !== undefined) {
       updated.image = partial.image;
     }
@@ -666,6 +743,7 @@ export function ContentProvider({ children }) {
         processSteps, updateStep, addStep, deleteStep,
         contactTypes, addContactType, deleteContactType,
         faqs, rawFaqs, updateFaq, addFaq, deleteFaq,
+        reviews, rawReviews, updateReview, addReview, deleteReview,
         getServicePage, updateServicePage,
       }}
     >

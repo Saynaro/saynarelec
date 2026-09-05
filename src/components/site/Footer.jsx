@@ -92,6 +92,7 @@ export default function Footer() {
     { label: t('nav_services'), href: '#services' },
     { label: t('nav_realisations'), href: '#realisations' },
     { label: t('nav_about'), href: '#about' },
+    { label: t('nav_reviews'), href: '#reviews' },
     { label: t('nav_contact'), href: '#contact' },
   ];
 

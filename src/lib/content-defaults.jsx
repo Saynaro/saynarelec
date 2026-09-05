@@ -147,6 +147,165 @@ export const DEFAULT_FAQS = [
   }
 ];
 
+export const DEFAULT_REVIEWS = [
+  {
+    name: "Sophie & Laurent M.",
+    category: "conformite",
+    rating: 5,
+    verified: true,
+    location: {
+      fr: "Bruxelles (Uccle)",
+      nl: "Brussel (Ukkel)",
+      en: "Brussels (Uccle)"
+    },
+    project: {
+      fr: "Mise en conformité RGIE & Schémas",
+      nl: "AREI-conformiteit & Eendraadschema's",
+      en: "RGIE Compliance & Single-Line Diagrams"
+    },
+    date: {
+      fr: "Février 2025",
+      nl: "Februari 2025",
+      en: "February 2025"
+    },
+    text: {
+      fr: "Nous devions mettre en conformité notre installation pour la vente de notre maison à Uccle. Saynarelec a repris le tableau électrique de A à Z, réalisé les schémas unifilaires et le contrôle de l'organisme agréé s'est déroulé sans aucune remarque. Travail soigné, ponctualité exemplaire et grande disponibilité !",
+      nl: "We moesten onze installatie AREI-conform maken voor de verkoop van onze woning in Ukkel. Saynarelec vernieuwde het verdeelbord van A tot Z en tekende alle schema's. De officiële keuring slaagde meteen vlekkeloos. Heel netjes en punctueel!",
+      en: "We needed our electrical system certified to sell our home in Uccle. Saynarelec overhauled the distribution board from A to Z, drew up the single-line diagrams, and the inspection passed with flying colors. Spotless work and outstanding punctuality!"
+    }
+  },
+  {
+    name: "Marc Vandenameele",
+    category: "renovation",
+    rating: 5,
+    verified: true,
+    location: {
+      fr: "Waterloo (Brabant wallon)",
+      nl: "Waterloo (Waals-Brabant)",
+      en: "Waterloo (Walloon Brabant)"
+    },
+    project: {
+      fr: "Rénovation électrique complète appartement",
+      nl: "Volledige elektrische renovatie appartement",
+      en: "Complete apartment electrical rewiring"
+    },
+    date: {
+      fr: "Janvier 2025",
+      nl: "Januari 2025",
+      en: "January 2025"
+    },
+    text: {
+      fr: "Rénovation intégrale d'un appartement de 110 m². Du passage des nouvelles lignes sous gaines à l'installation des appareillages modernes et spots encastrés, tout a été exécuté avec une précision remarquable. Devis clair, respect des délais convenus et chantier propre chaque soir.",
+      nl: "Volledige renovatie van een appartement van 110 m². Van nieuwe bekabeling tot moderne schakelaars en inbouwspots: alles werd met uiterste precisie uitgevoerd. Duidelijke offerte, strak binnen de planning en de werf was elke avond netjes opgeruimd.",
+      en: "Full rewiring of a 110 m² apartment. From new conduits and cabling to modern designer switches and recessed spotlights, everything was handled with remarkable precision. Clear transparent quote, dead on schedule, and tidy worksite every evening."
+    }
+  },
+  {
+    name: "David Dubois",
+    category: "solaire",
+    rating: 5,
+    verified: true,
+    location: {
+      fr: "Liège",
+      nl: "Luik",
+      en: "Liège"
+    },
+    project: {
+      fr: "Installation 14 panneaux photovoltaïques",
+      nl: "Plaatsing van 14 zonnepanelen",
+      en: "Installation of 14 solar panels"
+    },
+    date: {
+      fr: "Décembre 2024",
+      nl: "December 2024",
+      en: "December 2024"
+    },
+    text: {
+      fr: "Installation solaire clé en main impeccable. Ibragim a pris le temps d'étudier l'orientation de notre toit et nos consommations pour dimensionner exactement le système nécessaire avec onduleur connecté. Rendement au top dès les premières semaines, un vrai travail d'expert.",
+      nl: "Vlekkeloze turn-key zonne-installatie. Ibragim nam de tijd om de dakoriëntatie en ons verbruik te analyseren om precies het juiste systeem met slimme omvormer te plaatsen. Uitstekend rendement vanaf de eerste weken, echt vakmanschap.",
+      en: "Turnkey solar installation executed flawlessly. Ibragim thoroughly analyzed our roof orientation and energy usage to specify the exact system with a connected smart inverter. Output has been fantastic from day one, true expert craftsmanship."
+    }
+  },
+  {
+    name: "Émilie De Smet",
+    category: "depannage",
+    rating: 5,
+    verified: true,
+    location: {
+      fr: "Bruxelles (Ixelles)",
+      nl: "Brussel (Elsene)",
+      en: "Brussels (Ixelles)"
+    },
+    project: {
+      fr: "Dépannage d'urgence & court-circuit",
+      nl: "Nooddepannage & kortsluiting",
+      en: "Emergency repair & short circuit"
+    },
+    date: {
+      fr: "Novembre 2024",
+      nl: "November 2024",
+      en: "November 2024"
+    },
+    text: {
+      fr: "Disjoncteur général qui sautait en boucle un samedi en fin de journée. Intervention rapide, recherche méthodique de panne avec appareils de mesure et réparation du circuit défectueux en moins d'une heure. Très rassurant d'avoir un électricien aussi efficace et honnête sur les tarifs.",
+      nl: "Hoofdschakelaar die zaterdagavond bleef uitvallen. Snelle interventie, methodische foutopsporing met meetapparatuur en herstel van het defecte circuit binnen het uur. Zeer geruststellend om zo'n bekwame en eerlijke vakman te vinden.",
+      en: "Main breaker constantly tripping on a Saturday late afternoon. Swift emergency response, methodical testing with professional diagnostic meters, and repaired the faulty circuit in less than an hour. Very reassuring to have an honest, highly skilled electrician."
+    }
+  },
+  {
+    name: "Jean-Philippe Moreau",
+    category: "eclairage",
+    rating: 5,
+    verified: true,
+    location: {
+      fr: "Namur",
+      nl: "Namen",
+      en: "Namur"
+    },
+    project: {
+      fr: "Éclairage architectural LED intérieur & extérieur",
+      nl: "Architecturale ledverlichting binnen & buiten",
+      en: "Architectural indoor & outdoor LED lighting"
+    },
+    date: {
+      fr: "Octobre 2024",
+      nl: "Oktober 2024",
+      en: "October 2024"
+    },
+    text: {
+      fr: "Conseils remarquables pour sublimer notre villa avec des rubans LED indirects et des spots basse consommation. Le résultat dépasse nos attentes, les ambiances lumineuses sont magnifiques et tout se contrôle facilement. Bravo pour le sens du détail !",
+      nl: "Uitstekend advies om onze woning te verrijken met indirecte ledstrips en energiezuinige spots. Het resultaat overtreft onze verwachtingen, de lichtsfeer is schitterend en eenvoudig te bedienen. Veel oog voor detail!",
+      en: "Superb guidance on elevating our home with indirect LED profiles and energy-efficient recessed spots. The end result exceeds our expectations: stunning lighting scenes and effortless controls. Tremendous attention to detail!"
+    }
+  },
+  {
+    name: "Alexandre & Céline R.",
+    category: "generale",
+    rating: 5,
+    verified: true,
+    location: {
+      fr: "Wavre (Brabant wallon)",
+      nl: "Waver (Waals-Brabant)",
+      en: "Wavre (Walloon Brabant)"
+    },
+    project: {
+      fr: "Installation neuve & borne de recharge",
+      nl: "Nieuwe installatie & laadpaal EV",
+      en: "New installation & EV charging station"
+    },
+    date: {
+      fr: "Septembre 2024",
+      nl: "September 2024",
+      en: "September 2024"
+    },
+    text: {
+      fr: "Saynarelec a géré toute l'installation électrique de notre nouvelle construction, y compris le raccordement de notre borne de recharge 11 kW. Électricien rigoureux, toujours à l'écoute et de très bon conseil technique. Nous recommandons les yeux fermés !",
+      nl: "Saynarelec verzorgde de complete elektrische installatie van onze nieuwbouw, inclusief de aansluiting van onze 11 kW laadpaal. Zorgvuldig, altijd bereikbaar en technisch ijzersterk. Zonder enige twijfel aan te bevelen!",
+      en: "Saynarelec handled the complete electrical installation for our newly built house, including wiring our 11 kW EV charger. Thorough, attentive, and technically sharp. We recommend Saynarelec wholeheartedly!"
+    }
+  }
+];
+
 const SCALAR_KEYS = Object.keys(dictionaries.fr).filter((k) => typeof dictionaries.fr[k] === 'string');
 
 export const DEFAULT_CONTENT = {
@@ -159,5 +318,6 @@ export const DEFAULT_CONTENT = {
   process_steps: buildProcessSteps(),
   contact_types: buildContactTypes(),
   faqs: DEFAULT_FAQS,
+  reviews: DEFAULT_REVIEWS,
   service_pages: SERVICES_SEO_DATA,
 };

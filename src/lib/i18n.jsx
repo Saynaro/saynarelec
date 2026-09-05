@@ -8,6 +8,7 @@ export const dictionaries = {
     nav_services: 'Services',
     nav_realisations: 'Réalisations',
     nav_about: "L'entreprise",
+    nav_reviews: 'Avis',
     nav_contact: 'Contact',
     cta_quote: 'Demander un devis',
     // Hero
@@ -67,7 +68,7 @@ export const dictionaries = {
     solar_cta: 'Parler de mon projet solaire',
     // Process
     process_label: 'MÉTHODE',
-    process_title: 'De la demande à la mise en service.',
+    process_title: 'Notre processus en 5 étapes.',
     process_steps: [
       { title: 'Votre demande', desc: 'Vous nous présentez votre projet.' },
       { title: 'Analyse', desc: "Nous évaluons vos besoins." },
@@ -75,6 +76,19 @@ export const dictionaries = {
       { title: 'Intervention', desc: 'Réalisation des travaux.' },
       { title: 'Mise en service', desc: 'Vérification et finalisation.' },
     ],
+    // Reviews
+    reviews_label: 'TÉMOIGNAGES',
+    reviews_title: 'Ce que disent nos clients.',
+    reviews_subtitle: 'La satisfaction de nos clients en Belgique est notre plus grande fierté. Découvrez leurs retours d\'expérience sur nos chantiers.',
+    reviews_google_note: '4.9 / 5.0 sur Google Avis',
+    reviews_verified: 'Avis vérifiés',
+    reviews_filter_all: 'Tous les avis',
+    reviews_stat_rate: '99% de satisfaction client',
+    reviews_stat_conformite: '100% conformité RGIE validée',
+    reviews_stat_completed: '70+ chantiers réalisés',
+    reviews_cta_title: 'Vous avez un projet électrique ou photovoltaïque ?',
+    reviews_cta_desc: 'Bénéficiez du savoir-faire Saynarelec avec un devis clair, gratuit et sans mauvaise surprise.',
+    reviews_cta_btn: 'Demander un devis',
     // Final CTA
     finalcta_title: 'Un projet électrique ? Parlons-en.',
     finalcta_text: 'Décrivez votre projet et contactez Saynarelec pour échanger sur vos besoins.',
@@ -118,6 +132,7 @@ export const dictionaries = {
     nav_services: 'Diensten',
     nav_realisations: 'Realisaties',
     nav_about: 'Het bedrijf',
+    nav_reviews: 'Beoordelingen',
     nav_contact: 'Contact',
     cta_quote: 'Offerte aanvragen',
     hero_label: 'SAYNARELEC · BELGIË',
@@ -179,6 +194,20 @@ export const dictionaries = {
       { title: 'Uitvoering', desc: 'Realisatie van de werken.' },
       { title: 'Inbedrijfstelling', desc: 'Controle en afronding.' },
     ],
+    // Reviews
+    reviews_label: 'BEOORDELINGEN',
+    reviews_title: 'Wat onze klanten zeggen.',
+    reviews_subtitle: 'Klanttevredenheid in België is onze grootste trots. Ontdek de ervaringen van onze klanten met onze projecten.',
+    reviews_google_note: '4.9 / 5.0 op Google Reviews',
+    reviews_verified: 'Geverifieerde reviews',
+    reviews_filter_all: 'Alle beoordelingen',
+    reviews_stat_rate: '99% klanttevredenheid',
+    reviews_stat_conformite: '100% AREI-keuring geslaagd',
+    reviews_stat_completed: '70+ projecten gerealiseerd',
+    reviews_cta_title: 'Heeft u een elektrisch of zonneproject?',
+    reviews_cta_desc: 'Profiteer van de vakkennis van Saynarelec met een duidelijke, gratis offerte zonder verrassingen.',
+    reviews_cta_btn: 'Offerte aanvragen',
+    // Final CTA
     finalcta_title: 'Een elektrisch project? Laten we praten.',
     finalcta_text: 'Beschrijf uw project en neem contact op met Saynarelec om uw behoeften te bespreken.',
     finalcta_btn: 'Offerte aanvragen',
@@ -218,6 +247,7 @@ export const dictionaries = {
     nav_services: 'Services',
     nav_realisations: 'Projects',
     nav_about: 'About',
+    nav_reviews: 'Reviews',
     nav_contact: 'Contact',
     cta_quote: 'Request a quote',
     hero_label: 'SAYNARELEC · BELGIUM',
@@ -279,6 +309,20 @@ export const dictionaries = {
       { title: 'Execution', desc: 'Carrying out the work.' },
       { title: 'Commissioning', desc: 'Checking and completion.' },
     ],
+    // Reviews
+    reviews_label: 'TESTIMONIALS',
+    reviews_title: 'What our clients say.',
+    reviews_subtitle: 'Client satisfaction across Belgium is our highest pride. Read real feedback from our clients about our workmanship.',
+    reviews_google_note: '4.9 / 5.0 on Google Reviews',
+    reviews_verified: 'Verified reviews',
+    reviews_filter_all: 'All reviews',
+    reviews_stat_rate: '99% client satisfaction',
+    reviews_stat_conformite: '100% RGIE inspection pass rate',
+    reviews_stat_completed: '70+ projects completed',
+    reviews_cta_title: 'Have an electrical or solar project in mind?',
+    reviews_cta_desc: 'Benefit from Saynarelec craftsmanship with a transparent, free, and no-obligation quote.',
+    reviews_cta_btn: 'Request a quote',
+    // Final CTA
     finalcta_title: 'An electrical project? Let\'s talk.',
     finalcta_text: 'Describe your project and contact Saynarelec to discuss your needs.',
     finalcta_btn: 'Request a quote',
@@ -314,15 +358,36 @@ export const dictionaries = {
   },
 };
 
+const defaultT = (k) => (dictionaries.fr && dictionaries.fr[k] !== undefined ? dictionaries.fr[k] : k);
+
 const LanguageContext = createContext({
   lang: 'fr',
   setLang: (_lang) => {},
-  t: (k) => k,
+  t: defaultT,
   dict: dictionaries.fr,
 });
 
 export function LanguageProvider({ children }) {
-  const [lang, setLang] = useState('fr');
+  const [lang, setLangState] = useState(() => {
+    try {
+      const stored = localStorage.getItem('sayna_lang');
+      if (stored && (stored === 'fr' || stored === 'nl' || stored === 'en')) {
+        return stored;
+      }
+    } catch (e) {
+      // ignore
+    }
+    return 'fr';
+  });
+
+  const setLang = (nextLang) => {
+    setLangState(nextLang);
+    try {
+      localStorage.setItem('sayna_lang', nextLang);
+    } catch (e) {
+      // ignore
+    }
+  };
 
   useEffect(() => {
     document.documentElement.lang = lang;
@@ -330,7 +395,9 @@ export function LanguageProvider({ children }) {
 
   const t = (key) => {
     const d = dictionaries[lang] || dictionaries.fr;
-    return d[key] !== undefined ? d[key] : key;
+    if (d && d[key] !== undefined) return d[key];
+    if (dictionaries.fr && dictionaries.fr[key] !== undefined) return dictionaries.fr[key];
+    return key;
   };
 
   return (

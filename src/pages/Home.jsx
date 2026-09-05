@@ -9,6 +9,7 @@ import About from '@/components/site/About';
 import Realisations from '@/components/site/Realisations';
 import SolarSection from '@/components/site/SolarSection';
 import Process from '@/components/site/Process';
+import Reviews from '@/components/site/Reviews';
 import FAQ from '@/components/site/FAQ';
 import FinalCTA from '@/components/site/FinalCTA';
 import Contact from '@/components/site/Contact';
@@ -54,6 +55,13 @@ function HomeContent() {
           { "@type": "City", "name": "Charleroi" },
           { "@type": "City", "name": "Namur" }
         ],
+        "aggregateRating": {
+          "@type": "AggregateRating",
+          "ratingValue": "4.9",
+          "reviewCount": "48",
+          "bestRating": "5",
+          "worstRating": "1"
+        },
         "hasOfferCatalog": {
           "@type": "OfferCatalog",
           "name": "Prestations Saynarelec",
@@ -144,6 +152,7 @@ function HomeContent() {
         <Realisations />
         <SolarSection />
         <Process />
+        <Reviews />
         <FAQ />
         <FinalCTA />
         <Contact />
